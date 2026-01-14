@@ -5,6 +5,13 @@ const app = express(); // Création du serveur web
 app.use(express.json()); // Si on reçoit un json -> permet le parsing
 app.use(cors()); // Autorise le front à communiquer
 
+const {login}=require("./auth/authController");
+const { requireAuth } = require('./auth/authMiddleware');
+
+// Routes
+app.post("/api/login", login)
+app.post("/api/validate", requireAuth)
+
 // Démarrer le serveur
 const PORT = 5000;
 app.listen(PORT, () =>{
