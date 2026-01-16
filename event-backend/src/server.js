@@ -10,7 +10,7 @@ const { requireAuth } = require('./auth/authMiddleware');
 
 // Routes
 app.post("/api/login", login)
-app.post("/api/validate", requireAuth)
+app.post("/api/me", requireAuth, me)
 
 // Démarrer le serveur
 const PORT = 5000;

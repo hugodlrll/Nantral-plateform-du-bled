@@ -22,3 +22,12 @@ exports.login = async(req, res)=>{
 
     return res.json({token});
 }
+
+exports.me = async (req, res) => {
+    return res.json({
+        user:{
+            id: req.user.id,
+            username : req.user.username,
+        },
+    });
+};
