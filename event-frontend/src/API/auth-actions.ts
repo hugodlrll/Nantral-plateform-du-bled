@@ -1,3 +1,5 @@
+import type { LoginResponse, User } from "../utils/types";
+
 export async function login(username:string, password:string):Promise<string>{
     const res = await fetch("/api/login",{
         method:"POST",
@@ -14,7 +16,25 @@ export async function login(username:string, password:string):Promise<string>{
     return data.token;
 }
 
-export async function valiateToken():Promise<User> {
+export async function signup(username:string, password:string):Promise<string> {
+    const res = await fetch("/api/signup",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({username, password}),
+    })
+
+    if(!res.ok){
+        const error = await res.json();
+        throw new Error(error.error || "Signup failed");
+    }
+
+    const data: LoginResponse = await res.json();
+    localStorage.setItem("token", data.token);
+
+    return data.token;
+}
+
+export async function validateToken():Promise<User> {
     const token = localStorage.getItem("token");
     
     if(!token){
@@ -29,4 +49,6 @@ export async function valiateToken():Promise<User> {
     if(!res.ok) {
         throw new Error("Invalid token");
     }
+    const data = await res.json();
+    return data.user;
 }
