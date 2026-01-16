@@ -1,5 +1,6 @@
 const express = require('express'); // Moteur du serveur
 const cors = require("cors"); // Permet la communication avec le front
+require('dotenv').config()
 
 const app = express(); // Création du serveur web
 app.use(express.json()); // Si on reçoit un json -> permet le parsing

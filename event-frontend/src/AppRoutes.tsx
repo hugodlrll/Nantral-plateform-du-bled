@@ -1,31 +1,28 @@
 import { Navigate, Route, Routes } from "react-router"
 import LoginPage from "./Page/LoginPage"
 import SignUpPage from "./Page/SignUpPage"
-import type { User } from "./utils/types";
+import { useMemo } from "react";
 
-interface AppRoutesProps {
-    user: User | null;
-}
-
-export default function AppRoutes({ user }: AppRoutesProps) {
-    const isAuthenticated = user !== null;
+export default function AppRoutes() {
+    const token = localStorage.getItem("token");
+    const isAuthentificated = useMemo(() => Boolean(token), [token]);
     
     return (
         <Routes>
             <Route
                 path="/"
                 element={
-                    isAuthenticated ? (
+                    isAuthentificated ? (
                         <Navigate to="/events" replace/>
                     ) : (
-                        <SignUpPage/>
+                        <LoginPage/>
                     )
                 }
             />
             <Route
                 path="/login"
                 element={
-                    isAuthenticated ? (
+                    isAuthentificated ? (
                         <Navigate to="/events" replace/>
                     ) : (
                         <LoginPage/>

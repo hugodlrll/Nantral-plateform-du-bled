@@ -2,8 +2,6 @@ const pool = require("../../db.js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret_key";
-
 exports.login = async(req, res)=>{
     const {username, password} = req.body;
 
@@ -24,7 +22,7 @@ exports.login = async(req, res)=>{
         return res.status(401).json({error:"Invalid credentials"})
     }
 
-    const token = jwt.sign({id:user.id, username:user.username}, JWT_SECRET, {expiresIn:"1h"});
+    const token = jwt.sign({id:user.id, username:user.username}, process.env.JWT_SECRET, {expiresIn:"1h"});
 
     return res.json({token});
 }
@@ -43,7 +41,7 @@ exports.signup = async(req, res) => {
     const insertResult = await pool.query("INSERT INTO users(username, password) VALUES($1, $2) RETURNING id", [username, passwordHash]);
     const newUser = insertResult.rows[0];
     
-    const token = jwt.sign({id: newUser.id, username: username}, JWT_SECRET, {expiresIn:"1h"});
+    const token = jwt.sign({id: newUser.id, username: username}, process.env.JWT_SECRET, {expiresIn:"1h"});
     return res.json({token});
 
 }

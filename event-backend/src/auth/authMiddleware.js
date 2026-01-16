@@ -1,5 +1,3 @@
-const JWT_SECRET = "supersecretkey";
-
 exports.requireAuth=(req, res, next)=>{
     // Lire l'autorisation
     const authHeader = req.header("Authorization");
@@ -13,7 +11,7 @@ exports.requireAuth=(req, res, next)=>{
     const toker = authHeader.replace("Bearer", "");
 
     try{
-        const decoded = JWT_SECRET.verify(token, JWT_SECRET);
+        const decoded = process.env.JWT_SECRET.verify(token, process.env.JWT_SECRET);
         req.user=decoded;
         next();
     }

@@ -1,7 +1,7 @@
 import type { LoginResponse, User } from "../utils/types";
 
 export async function login(username:string, password:string):Promise<string>{
-    const res = await fetch("/api/login",{
+    const res = await fetch(`/api/login`,{
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({username, password}),
@@ -17,7 +17,7 @@ export async function login(username:string, password:string):Promise<string>{
 }
 
 export async function signup(username:string, password:string):Promise<string> {
-    const res = await fetch("/api/signup",{
+    const res = await fetch(`/api/signup`,{
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({username, password}),
@@ -40,7 +40,7 @@ export async function validateToken():Promise<User> {
     if(!token){
         throw new Error("no token");
     }
-    const res = await fetch("/api/validate", {
+    const res = await fetch(`/api/me`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
