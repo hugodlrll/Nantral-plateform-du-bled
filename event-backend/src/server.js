@@ -11,7 +11,7 @@ const { requireAuth } = require('./auth/authMiddleware');
 
 // Routes
 app.post("/api/login", login)
-app.post("/api/me", requireAuth, me)
+app.get("/api/me", requireAuth, me)
 app.post("/api/signup", signup)
 
 // Démarrer le serveur

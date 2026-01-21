@@ -52,3 +52,13 @@ export async function validateToken():Promise<User> {
     const data = await res.json();
     return data.user;
 }
+
+export function logout(): void {
+    const token = localStorage.getItem("token");
+    
+    if(!token){
+        throw new Error("no token");
+    } else {
+        localStorage.removeItem("token");
+    }  
+}

@@ -20,3 +20,11 @@
 5. CREATE DATABASE DBname ;
 6. \c dbname ;
 7. use vs extension postgres sql (the second one) to visualize the database
+8. The command to create an sql table is the following one :
+
+CREATE TABLE users(  
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(255)
+);

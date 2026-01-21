@@ -7,11 +7,15 @@ import { validateToken } from './API/auth-actions';
 
 export default function App() {
   const[user, setUser] = useState<User | null>(null);
+  const[token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if(!token) {
+    const storedToken = localStorage.getItem("token");
+
+    if(!storedToken) {
       return;
+    } else {
+      setToken(storedToken);
     }
     validateToken()
       .then((u) => {
@@ -19,14 +23,32 @@ export default function App() {
       })
       .catch(() => {
         localStorage.removeItem("token");
+        setToken(null);
         setUser(null);
       });
   }, []);
+
+  const handleLoginSucess = (t:string, u:User) => {
+    localStorage.setItem("token", t);
+    localStorage.setItem("userId", u.id.toString());
+    setToken(t);
+    setUser(u);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    setToken(null);
+    setUser(null);
+  }
 
   return(
     <BrowserRouter>
       <AppRoutes
         user={user}
+        token={token}
+        onLoginSuccess={handleLoginSucess}
+        onLogout={handleLogout}
       /> 
     </BrowserRouter>
   );

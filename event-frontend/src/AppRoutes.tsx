@@ -1,33 +1,24 @@
 import { Navigate, Route, Routes } from "react-router"
-import LoginPage from "./Page/LoginPage"
-import SignUpPage from "./Page/SignUpPage"
-import { useMemo } from "react";
+import ConnectPage from "./Page/ConnectPage"
+import HomePage from "./Page/HomePage"
+import { useEffect, useMemo } from "react";
+import type { AppRouteProps } from "./utils/types";
 
-export default function AppRoutes() {
-    const token = localStorage.getItem("token");
-    const isAuthentificated = useMemo(() => Boolean(token), [token]);
+export default function AppRoutes({user, token, onLoginSuccess, onLogout}: AppRouteProps) {
+    const isAuthenticated = useMemo(()=> Boolean(token && user), [token, user]);
+
+    useEffect(()=>{
+        console.log(isAuthenticated);
+    },[isAuthenticated])
     
     return (
         <Routes>
-            <Route
-                path="/"
-                element={
-                    isAuthentificated ? (
-                        <Navigate to="/events" replace/>
-                    ) : (
-                        <LoginPage/>
-                    )
-                }
-            />
-            <Route
-                path="/login"
-                element={
-                    isAuthentificated ? (
-                        <Navigate to="/events" replace/>
-                    ) : (
-                        <LoginPage/>
-                    )
-                }
+            <Route 
+                path="/" 
+                element={isAuthenticated ? <Navigate to="/home" replace/> : <ConnectPage onLoginSuccess={onLoginSuccess} />} />
+            <Route 
+                path="/home" 
+                element={isAuthenticated ? <HomePage onLogout={onLogout} /> : <Navigate to="/" replace/>}
             />
         </Routes>
     );

@@ -1,3 +1,5 @@
+const jwt = require("jsonwebtoken");
+
 exports.requireAuth=(req, res, next)=>{
     // Lire l'autorisation
     const authHeader = req.header("Authorization");
@@ -8,10 +10,10 @@ exports.requireAuth=(req, res, next)=>{
     }
 
     // Récupère le token sans le "Bearer"
-    const toker = authHeader.replace("Bearer", "");
+    const token = authHeader.replace("Bearer", "").trim();
 
     try{
-        const decoded = process.env.JWT_SECRET.verify(token, process.env.JWT_SECRET);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user=decoded;
         next();
     }
