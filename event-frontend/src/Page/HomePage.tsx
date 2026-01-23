@@ -1,11 +1,11 @@
 import "./styles/HomePage.scss";
 import { useState, useEffect } from "react";
 import { logout } from "../API/auth-actions";
-import { createEvent, getUserEvents, deleteEvent } from "../API/event-actions";
+import { createEvent, getUserEvents, deleteEvent, updateEvent } from "../API/event-actions";
 import { useNavigate } from "react-router-dom";
 import type { Event } from "../utils/types";
 import Header from "../Components/Header";
-import CreateEventDialog from "../Components/CreateEventDialog";
+import EventDialog from "../Components/EventDialog";
 import EventList from "../Components/EventList";
 
 interface HomePageProps {
@@ -19,6 +19,8 @@ export default function HomePage({ onLogout, token }: HomePageProps) {
     const [date, setDate] = useState("");
     const [description, setDescription] = useState("");
     const [loading, setLoading] = useState(false);
+    const [editingEventId, setEditingEventId] = useState<number | null>(null);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
     const navigate = useNavigate();
 
     // Charger les événements au montage
@@ -60,16 +62,25 @@ export default function HomePage({ onLogout, token }: HomePageProps) {
 
         try {
             setLoading(true);
-            await createEvent(token, { title, date, description });
+            
+            if (editingEventId) {
+                // Mode édition
+                await updateEvent(token, editingEventId, { title, date, description });
+            } else {
+                // Mode création
+                await createEvent(token, { title, date, description });
+            }
+            
             // Recharger les événements
             await loadUserEvents();
             // Réinitialiser le formulaire
             setTitle("");
             setDate("");
             setDescription("");
+            setEditingEventId(null);
         } catch (error) {
-            console.error("Erreur lors de la création de l'événement :", error);
-            alert("Erreur lors de la création de l'événement");
+            console.error("Erreur lors de la création/modification de l'événement :", error);
+            alert("Erreur lors de la création/modification de l'événement");
         } finally {
             setLoading(false);
         }
@@ -95,6 +106,15 @@ export default function HomePage({ onLogout, token }: HomePageProps) {
         }
     };
 
+    const handleEditEvent = (event: Event) => {
+        // Pré-remplir le formulaire avec les données de l'événement
+        setTitle(event.title);
+        setDate(event.date);
+        setDescription(event.description);
+        setEditingEventId(event.id);
+        setIsDialogOpen(true);
+    };
+
     return (
         <div className="HomePage">
             <div className="header">
@@ -102,13 +122,12 @@ export default function HomePage({ onLogout, token }: HomePageProps) {
             </div>
             <div className="body">
                 <h3>Bienvenue sur Nantral Plateforme (du bled) !</h3>
-                <p>Explorez les événements, inscrivez-vous et connectez-vous avec d'autres membres de la communauté.</p>
                 <div>
-                    <h1>Mes événements</h1>
-                    {loading ? <p>Chargement...</p> : <EventList events={events} />}
+                    <h3>Mes événements</h3>
+                    {loading ? <p>Chargement...</p> : <EventList events={events} onDelete={handleDeleteEvent} onEdit={handleEditEvent} />}
                 </div>
             </div>
-            <CreateEventDialog
+            <EventDialog
                 title={title}
                 date={date}
                 description={description}
@@ -117,6 +136,18 @@ export default function HomePage({ onLogout, token }: HomePageProps) {
                 onDescriptionChange={setDescription}
                 onSubmit={addEvent}
                 loading={loading}
+                mode={editingEventId ? "edit" : "create"}
+                isOpen={isDialogOpen}
+                onOpenChange={(open) => {
+                    setIsDialogOpen(open);
+                    if (!open) {
+                        // Réinitialiser quand on ferme le dialogue
+                        setTitle("");
+                        setDate("");
+                        setDescription("");
+                        setEditingEventId(null);
+                    }
+                }}
             />
         </div>
     );

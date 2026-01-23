@@ -87,3 +87,26 @@ export const deleteEvent = async (token: string, eventId: number) => {
         throw error;
     }
 };
+
+// Mettre à jour un événement
+export const updateEvent = async (token: string, eventId: number, eventData: { title: string; date: string; description: string }) => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/events/${eventId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+            body: JSON.stringify(eventData),
+        });
+
+        if (!response.ok) {
+            throw new Error("Erreur lors de la mise à jour de l'événement");
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Erreur updateEvent:", error);
+        throw error;
+    }
+};

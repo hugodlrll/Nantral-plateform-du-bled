@@ -31,5 +31,6 @@ export interface EventFormProps {
     onTitleChange: (value: string) => void;
     onDateChange: (value: string) => void;
     onDescriptionChange: (value: string) => void;
+    buttonText?: string;
     onSubmit: () => void;
 }

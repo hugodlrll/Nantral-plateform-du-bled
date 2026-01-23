@@ -9,6 +9,7 @@ export default function EventForm({
     onDateChange,
     onDescriptionChange,
     onSubmit,
+    buttonText = "Créer",
 }: EventFormProps) {
     return (
         <div className="form">
@@ -27,7 +28,7 @@ export default function EventForm({
                 value={description}
                 onChange={(e) => onDescriptionChange(e.target.value)}
             />
-            <button onClick={onSubmit}>Créer</button>
+            <button onClick={onSubmit}>{buttonText}</button>
         </div>
     );
 }

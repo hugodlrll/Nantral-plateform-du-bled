@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog } from "radix-ui";
-import { PlusIcon } from "@radix-ui/react-icons";
+import { Cross2Icon, PlusIcon } from "@radix-ui/react-icons";
 import EventForm from "./EventForm";
-import "./styles/CreateEventDialog.scss";
+import "./styles/EventDialog.scss";
 
-interface CreateEventDialogProps {
+interface EventDialogProps {
     title: string;
     date: string;
     description: string;
@@ -13,9 +13,12 @@ interface CreateEventDialogProps {
     onDescriptionChange: (value: string) => void;
     onSubmit: () => void;
     loading?: boolean;
+    mode?: "create" | "edit";
+    isOpen?: boolean;
+    onOpenChange?: (open: boolean) => void;
 }
 
-export default function CreateEventDialog({
+export default function EventDialog({
     title,
     date,
     description,
@@ -24,27 +27,41 @@ export default function CreateEventDialog({
     onDescriptionChange,
     onSubmit,
     loading = false,
-}: CreateEventDialogProps) {
-    const [open, setOpen] = useState(false);
+    mode = "create",
+    isOpen,
+    onOpenChange,
+}: EventDialogProps) {
+    const [internalOpen, setInternalOpen] = useState(false);
+
+    // Utiliser isOpen si fourni, sinon utiliser l'état interne
+    const open = isOpen !== undefined ? isOpen : internalOpen;
+    const setOpen = onOpenChange || setInternalOpen;
 
     const handleSubmit = () => {
         onSubmit();
         setOpen(false);
     };
 
+    const dialogTitle = mode === "edit" ? "Modifier l'événement" : "Créer un nouvel événement";
+    const dialogDescription = mode === "edit" 
+        ? "Modifiez les informations de votre événement"
+        : "Remplissez le formulaire pour créer votre événement";
+
     return (
         <Dialog.Root open={open} onOpenChange={setOpen}>
-            <Dialog.Trigger asChild>
-                <button className="fab-button" aria-label="Créer un événement" title="Créer un événement">
-                    <PlusIcon />
-                </button>
-            </Dialog.Trigger>
+            {mode === "create" && (
+                <Dialog.Trigger asChild>
+                    <button className="fab-button" aria-label="Créer un événement" title="Créer un événement">
+                        <PlusIcon />
+                    </button>
+                </Dialog.Trigger>
+            )}
             <Dialog.Portal>
                 <Dialog.Overlay className="dialog-overlay" />
                 <Dialog.Content className="dialog-content">
-                    <Dialog.Title className="dialog-title">Créer un nouvel événement</Dialog.Title>
+                    <Dialog.Title className="dialog-title">{dialogTitle}</Dialog.Title>
                     <Dialog.Description className="dialog-description">
-                        Remplissez le formulaire pour créer votre événement
+                        {dialogDescription}
                     </Dialog.Description>
 
                     <div className="dialog-form">
@@ -56,12 +73,13 @@ export default function CreateEventDialog({
                             onDateChange={onDateChange}
                             onDescriptionChange={onDescriptionChange}
                             onSubmit={handleSubmit}
+                            buttonText={mode === "edit" ? "Modifier" : "Créer"}
                         />
                     </div>
 
                     <Dialog.Close asChild>
                         <button className="dialog-close-button" aria-label="Fermer">
-                            ✕
+                            <Cross2Icon />
                         </button>
                     </Dialog.Close>
                 </Dialog.Content>

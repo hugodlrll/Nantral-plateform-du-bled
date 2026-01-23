@@ -89,3 +89,37 @@ exports.deleteEvent = async (req, res) => {
         res.status(500).json({ message: "Erreur serveur" });
     }
 };
+
+// Mettre à jour un événement
+exports.updateEvent = async (req, res) => {
+    try {
+        const { eventId } = req.params;
+        const { title, date, description } = req.body;
+        const user_id = req.user.id;
+
+        if (!title || !date || !description) {
+            return res.status(400).json({ message: "Tous les champs sont requis" });
+        }
+
+        const query = `
+            UPDATE events
+            SET title = $1, date = $2, description = $3, updated_at = NOW()
+            WHERE id = $4 AND created_by = $5
+            RETURNING id, title, date, description, created_by, created_at, updated_at;
+        `;
+
+        const result = await pool.query(query, [title, date, description, eventId, user_id]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: "Événement non trouvé ou vous n'avez pas la permission de le modifier" });
+        }
+
+        res.status(200).json({
+            message: "Événement modifié avec succès",
+            event: result.rows[0]
+        });
+    } catch (error) {
+        console.error("Erreur lors de la modification de l'événement :", error);
+        res.status(500).json({ message: "Erreur serveur" });
+    }
+};
