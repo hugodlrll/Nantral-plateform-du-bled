@@ -1,0 +1,61 @@
+@import "@radix-ui/colors/violet.css";
+
+/* HomePage styles */
+.HomePage {
+    padding-top: 70px;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f5f3ff 0%, #faf8ff 100%);
+}
+
+.body {
+    padding: 50px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.body h3 {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--violet-11);
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.body > p {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 40px;
+    text-align: center;
+    line-height: 1.6;
+}
+
+.body > div {
+    background-color: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--violet-4);
+}
+
+.body h1 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--violet-11);
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--violet-6);
+}
+
+@media (max-width: 768px) {
+    .body {
+        padding: 30px 15px;
+    }
+
+    .body h3 {
+        font-size: 24px;
+    }
+
+    .body > div {
+        padding: 25px;
+    }
+}

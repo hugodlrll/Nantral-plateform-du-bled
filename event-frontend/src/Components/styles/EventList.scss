@@ -1,0 +1,28 @@
+@import "@radix-ui/colors/violet.css";
+
+.events-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 25px;
+    padding: 20px 0;
+    margin-top: 30px;
+}
+
+@media (max-width: 768px) {
+    .events-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1200px) {
+    .events-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1201px) {
+    .events-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}

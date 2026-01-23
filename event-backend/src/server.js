@@ -8,11 +8,18 @@ app.use(cors()); // Autorise le front à communiquer
 
 const {login, signup, me}=require("./auth/authController");
 const { requireAuth } = require('./auth/authMiddleware');
+const { createEvent, getAllEvents, getUserEvents, deleteEvent } = require('./events/eventController');
 
-// Routes
+// Routes Auth
 app.post("/api/login", login)
 app.get("/api/me", requireAuth, me)
 app.post("/api/signup", signup)
+
+// Routes Events
+app.post("/api/events", requireAuth, createEvent) // Créer un événement
+app.get("/api/events", getAllEvents) // Récupérer tous les événements
+app.get("/api/events/my-events", requireAuth, getUserEvents) // Récupérer ses propres événements
+app.delete("/api/events/:eventId", requireAuth, deleteEvent) // Supprimer un événement
 
 // Démarrer le serveur
 const PORT = 5000;

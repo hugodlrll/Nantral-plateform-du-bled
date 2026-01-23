@@ -6,10 +6,6 @@ import type { AppRouteProps } from "./utils/types";
 
 export default function AppRoutes({user, token, onLoginSuccess, onLogout}: AppRouteProps) {
     const isAuthenticated = useMemo(()=> Boolean(token && user), [token, user]);
-
-    useEffect(()=>{
-        console.log(isAuthenticated);
-    },[isAuthenticated])
     
     return (
         <Routes>
@@ -18,7 +14,7 @@ export default function AppRoutes({user, token, onLoginSuccess, onLogout}: AppRo
                 element={isAuthenticated ? <Navigate to="/home" replace/> : <ConnectPage onLoginSuccess={onLoginSuccess} />} />
             <Route 
                 path="/home" 
-                element={isAuthenticated ? <HomePage onLogout={onLogout} /> : <Navigate to="/" replace/>}
+                element={isAuthenticated ? <HomePage onLogout={onLogout} token={token} /> : <Navigate to="/" replace/>}
             />
         </Routes>
     );

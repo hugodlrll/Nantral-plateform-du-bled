@@ -14,6 +14,7 @@ export default function ConnectPage({ onLoginSuccess }: ConnectPageProps) {
     const [email, setEmail]=useState("");
     const [password, setPassword]=useState("");
     const navigate = useNavigate();
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     
     async function handleSubmitLogin(e: FormEvent){
@@ -26,6 +27,7 @@ export default function ConnectPage({ onLoginSuccess }: ConnectPageProps) {
             onLoginSuccess(token, user);
             navigate("/home");
         } catch (error) {
+            setErrorMessage("Identifiant ou mot de passe invalide.");
             console.error("Login failed:", error);
         }
     }
@@ -40,6 +42,7 @@ export default function ConnectPage({ onLoginSuccess }: ConnectPageProps) {
             onLoginSuccess(token, user);
             navigate("/home");
         } catch (error) {
+            setErrorMessage("Le compte existe déjà ou une erreur est survenue.");
             console.error("Registration failed:", error);
         }
     }
@@ -62,6 +65,7 @@ export default function ConnectPage({ onLoginSuccess }: ConnectPageProps) {
                         <button type="submit">Se connecter</button>   
                     </form>
                 </div>
+                 {errorMessage && <p className="ErrorMessage">{errorMessage}</p>}
             </Tabs.Content>
             <Tabs.Content className="TabsContent" value="RegsitrationTab">
                 <div>
@@ -72,6 +76,7 @@ export default function ConnectPage({ onLoginSuccess }: ConnectPageProps) {
                         <button type="submit">S'inscrire</button>   
                     </form>
                 </div>
+                {errorMessage && <p className="ErrorMessage">{errorMessage}</p>}
             </Tabs.Content>
         </Tabs.Root>
     );

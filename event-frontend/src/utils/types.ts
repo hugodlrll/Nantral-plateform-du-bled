@@ -13,3 +13,23 @@ export interface AppRouteProps {
     onLoginSuccess: (token: string, user: User) => void
     onLogout: () => void
 }
+
+export type Event = {
+  id: number;
+  title: string;
+  date: string;
+  description: string;
+  created_by?: number;
+  created_by_username?: string;
+  created_at?: string;
+};
+
+export interface EventFormProps {
+    title: string;
+    date: string;
+    description: string;
+    onTitleChange: (value: string) => void;
+    onDateChange: (value: string) => void;
+    onDescriptionChange: (value: string) => void;
+    onSubmit: () => void;
+}

@@ -1,0 +1,76 @@
+@import "@radix-ui/colors/black-alpha.css";
+@import "@radix-ui/colors/violet.css";
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 25px;
+    background: linear-gradient(135deg, var(--violet-2) 0%, var(--violet-3) 100%);
+    border-radius: 10px;
+    margin: 25px 0;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--violet-5);
+}
+
+.form input,
+.form textarea {
+    padding: 12px 15px;
+    border: 2px solid var(--violet-7);
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    background-color: white;
+    transition: all 0.3s ease;
+    color: black;
+}
+
+.form input::placeholder,
+.form textarea::placeholder {
+    color: var(--violet-9);
+}
+
+.form input:focus,
+.form textarea:focus {
+    outline: none;
+    border-color: var(--violet-11);
+    box-shadow: 0 0 0 3px var(--violet-4);
+    background-color: #fafbff;
+}
+
+.form textarea {
+    resize: vertical;
+    min-height: 110px;
+    font-family: inherit;
+}
+
+.form button {
+    padding: 12px 20px;
+    background: linear-gradient(135deg, var(--violet-9) 0%, var(--violet-11) 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px var(--black-a5);
+    font-family: inherit;
+    margin-top: 10px;
+}
+
+.form button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px var(--black-a6);
+}
+
+.form button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px var(--black-a5);
+}
+
+.form button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
