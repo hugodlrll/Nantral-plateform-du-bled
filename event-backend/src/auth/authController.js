@@ -3,9 +3,9 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 exports.login = async(req, res)=>{
-    const {username, password} = req.body;
+    const {identifier, password} = req.body;
 
-    const result = await pool.query("SELECT * FROM users WHERE username=$1", [username]);
+    const result = await pool.query("SELECT * FROM users WHERE username=$1 OR email=$1", [identifier]);
 
     const user = result.rows[0];
 
@@ -28,29 +28,37 @@ exports.login = async(req, res)=>{
 }
 
 exports.signup = async(req, res) => {
-    const {username, password} = req.body;
+    try {
+        const {username, email, password} = req.body;
 
-    const result = await pool.query("SELECT id FROM users WHERE username=$1", [username]);
-    const existingUser = result.rows[0];
+        const result = await pool.query("SELECT id FROM users WHERE username=$1 OR email=$2", [username, email]);
+        const existingUser = result.rows[0];
 
-    if(existingUser){
-        return res.status(409).json({error:"Username already taken"})
+        if(existingUser){
+            return res.status(409).json({error:"Username or email already taken"})
+        }
+        
+        const passwordHash = await bcrypt.hash(password, 10);
+        const insertResult = await pool.query("INSERT INTO users(username, email, password) VALUES($1, $2, $3) RETURNING id", [username, email, passwordHash]);
+        const newUser = insertResult.rows[0];
+        
+        const token = jwt.sign({id: newUser.id, username: username}, process.env.JWT_SECRET, {expiresIn:"1h"});
+        return res.json({token});
+    } catch (error) {
+        console.error("Signup error:", error);
+        return res.status(500).json({error: "Internal server error"});
     }
-    
-    const passwordHash = await bcrypt.hash(password, 10);
-    const insertResult = await pool.query("INSERT INTO users(username, password) VALUES($1, $2) RETURNING id", [username, passwordHash]);
-    const newUser = insertResult.rows[0];
-    
-    const token = jwt.sign({id: newUser.id, username: username}, process.env.JWT_SECRET, {expiresIn:"1h"});
-    return res.json({token});
-
 }
 
 exports.me = async (req, res) => {
+    const result = await pool.query("SELECT id, username, email FROM users WHERE id=$1", [req.user.id]);
+    const user = result.rows[0];
+    
     return res.json({
         user:{
-            id: req.user.id,
-            username : req.user.username,
+            id: user.id,
+            username : user.username,
+            email: user.email,
         },
     });
 };

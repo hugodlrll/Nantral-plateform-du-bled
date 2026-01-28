@@ -10,6 +10,7 @@ interface ConnectPageProps {
 }
 
 export default function ConnectPage({ onLoginSuccess }: ConnectPageProps) {
+    const [identifier, setIdentifier]=useState("");
     const [username, setUsername]=useState("");
     const [email, setEmail]=useState("");
     const [password, setPassword]=useState("");
@@ -20,7 +21,7 @@ export default function ConnectPage({ onLoginSuccess }: ConnectPageProps) {
     async function handleSubmitLogin(e: FormEvent){
         e.preventDefault()
         try {
-            const token = await login(username, password);
+            const token = await login(identifier, password);
             localStorage.setItem("token", token);
             const user = await validateToken();
             localStorage.setItem("userId", user.id.toString());
@@ -35,7 +36,7 @@ export default function ConnectPage({ onLoginSuccess }: ConnectPageProps) {
     async function handleSubmitRegister(e: FormEvent){
         e.preventDefault()
         try {
-            const token = await signup(username, password);
+            const token = await signup(username, email, password);
             localStorage.setItem("token", token);
             const user = await validateToken();
             localStorage.setItem("userId", user.id.toString());
@@ -60,7 +61,7 @@ export default function ConnectPage({ onLoginSuccess }: ConnectPageProps) {
             <Tabs.Content className="TabsContent" value="LoginTab">
                 <div>
                     <form onSubmit={handleSubmitLogin}>
-                        <input placeholder="Identifiant" value={username} onChange={(e)=> setUsername(e.target.value)}></input>
+                        <input placeholder="Username ou Email" value={identifier} onChange={(e)=> setIdentifier(e.target.value)}></input>
                         <input placeholder="Mot de passe" type="password" value={password} onChange={(e)=> setPassword(e.target.value)}></input>
                         <button type="submit">Se connecter</button>   
                     </form>
