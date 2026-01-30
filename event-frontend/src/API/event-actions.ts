@@ -24,12 +24,13 @@ export const createEvent = async (token: string, eventData: { title: string; dat
 };
 
 // Récupérer tous les événements
-export const getAllEvents = async () => {
+export const getAllEvents = async (token: string) => {
     try {
         const response = await fetch(`${API_BASE_URL}/events`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
             },
         });
 
@@ -107,6 +108,72 @@ export const updateEvent = async (token: string, eventId: number, eventData: { t
         return await response.json();
     } catch (error) {
         console.error("Erreur updateEvent:", error);
+        throw error;
+    }
+};
+
+// S'inscrire à un événement
+export const registerForEvent = async (token: string, eventId: number) => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/events/${eventId}/register`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error("Erreur lors de l'inscription");
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Erreur registerForEvent:", error);
+        throw error;
+    }
+};
+
+// Se désinscrire d'un événement
+export const unregisterFromEvent = async (token: string, eventId: number) => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/events/${eventId}/register`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error("Erreur lors de la désinscription");
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Erreur unregisterFromEvent:", error);
+        throw error;
+    }
+};
+
+// Récupérer la liste des inscrits
+export const getEventRegistrants = async (token: string, eventId: number) => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/events/${eventId}/registrants`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error("Erreur lors de la récupération des inscrits");
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Erreur getEventRegistrants:", error);
         throw error;
     }
 };

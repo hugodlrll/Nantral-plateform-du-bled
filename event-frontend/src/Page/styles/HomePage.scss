@@ -4,21 +4,21 @@
 .HomePage {
     padding-top: 70px;
     min-height: 100vh;
+    height: 100vh;
+    overflow: hidden;
     background: linear-gradient(135deg, #f5f3ff 0%, #faf8ff 100%);
+    display: flex;
+    flex-direction: column;
 }
 
 .body {
     padding: 50px 20px;
-    max-width: 1200px;
     margin: 0 auto;
-}
-
-.body h3 {
-    font-size: 32px;
-    font-weight: 700;
-    color: var(--violet-11);
-    margin-bottom: 15px;
-    text-align: center;
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
 }
 
 .body > p {
@@ -27,14 +27,6 @@
     margin-bottom: 40px;
     text-align: center;
     line-height: 1.6;
-}
-
-.body > div {
-    background-color: white;
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    border: 1px solid var(--violet-4);
 }
 
 .body h1 {
@@ -47,6 +39,11 @@
 }
 
 @media (max-width: 768px) {
+    .HomePage {
+        overflow-y: auto;
+        height: auto;
+    }
+    
     .body {
         padding: 30px 15px;
     }

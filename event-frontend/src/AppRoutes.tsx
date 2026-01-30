@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from "react-router"
 import ConnectPage from "./Page/ConnectPage"
 import HomePage from "./Page/HomePage"
+import MyEventsPage from "./Page/MyEventsPage"
 import { useEffect, useMemo } from "react";
 import type { AppRouteProps } from "./utils/types";
 
@@ -14,7 +15,11 @@ export default function AppRoutes({user, token, onLoginSuccess, onLogout}: AppRo
                 element={isAuthenticated ? <Navigate to="/home" replace/> : <ConnectPage onLoginSuccess={onLoginSuccess} />} />
             <Route 
                 path="/home" 
-                element={isAuthenticated ? <HomePage onLogout={onLogout} token={token} /> : <Navigate to="/" replace/>}
+                element={isAuthenticated ? <HomePage onLogout={onLogout} token={token} user={user} /> : <Navigate to="/" replace/>}
+            />
+            <Route 
+                path="/my-events" 
+                element={isAuthenticated ? <MyEventsPage onLogout={onLogout} token={token} user={user} /> : <Navigate to="/" replace/>}
             />
         </Routes>
     );

@@ -22,7 +22,7 @@
     font-family: inherit;
     background-color: white;
     transition: all 0.3s ease;
-    color: black;
+    color: var(--violet-7);
 }
 
 .form input::placeholder,
@@ -74,3 +74,10 @@
     cursor: not-allowed;
     transform: none;
 }
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(40%) sepia(100%) saturate(500%) hue-rotate(202deg);
+    cursor: pointer;
+}
+
+

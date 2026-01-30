@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Dialog } from "radix-ui";
-import { Cross2Icon, PlusIcon } from "@radix-ui/react-icons";
+import { Cross2Icon, PlusIcon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import EventForm from "./EventForm";
+import type { Event } from "../utils/types";
 import "./styles/EventDialog.scss";
 
 interface EventDialogProps {
@@ -13,9 +14,15 @@ interface EventDialogProps {
     onDescriptionChange: (value: string) => void;
     onSubmit: () => void;
     loading?: boolean;
-    mode?: "create" | "edit";
+    mode?: "create" | "edit" | "view";
     isOpen?: boolean;
     onOpenChange?: (open: boolean) => void;
+    viewEvent?: Event;
+    registrants?: { id: number; username: string }[];
+    onEditClick?: () => void;
+    onDeleteClick?: () => void;
+    onRegisterClick?: () => void;
+    onUnregisterClick?: () => void;
 }
 
 export default function EventDialog({
@@ -30,10 +37,15 @@ export default function EventDialog({
     mode = "create",
     isOpen,
     onOpenChange,
+    viewEvent,
+    registrants = [],
+    onEditClick,
+    onDeleteClick,
+    onRegisterClick,
+    onUnregisterClick,
 }: EventDialogProps) {
     const [internalOpen, setInternalOpen] = useState(false);
 
-    // Utiliser isOpen si fourni, sinon utiliser l'état interne
     const open = isOpen !== undefined ? isOpen : internalOpen;
     const setOpen = onOpenChange || setInternalOpen;
 
@@ -42,9 +54,20 @@ export default function EventDialog({
         setOpen(false);
     };
 
-    const dialogTitle = mode === "edit" ? "Modifier l'événement" : "Créer un nouvel événement";
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        return new Intl.DateTimeFormat('fr-FR', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric'
+        }).format(date);
+    };
+
+    const dialogTitle = mode === "edit" ? "Modifier l'événement" : mode === "view" ? viewEvent?.title || "Détails de l'événement" : "Créer un nouvel événement";
     const dialogDescription = mode === "edit" 
         ? "Modifiez les informations de votre événement"
+        : mode === "view"
+        ? ""
         : "Remplissez le formulaire pour créer votre événement";
 
     return (
@@ -60,21 +83,77 @@ export default function EventDialog({
                 <Dialog.Overlay className="dialog-overlay" />
                 <Dialog.Content className="dialog-content">
                     <Dialog.Title className="dialog-title">{dialogTitle}</Dialog.Title>
-                    <Dialog.Description className="dialog-description">
-                        {dialogDescription}
-                    </Dialog.Description>
+                    {dialogDescription && (
+                        <Dialog.Description className="dialog-description">
+                            {dialogDescription}
+                        </Dialog.Description>
+                    )}
 
                     <div className="dialog-form">
-                        <EventForm
-                            title={title}
-                            date={date}
-                            description={description}
-                            onTitleChange={onTitleChange}
-                            onDateChange={onDateChange}
-                            onDescriptionChange={onDescriptionChange}
-                            onSubmit={handleSubmit}
-                            buttonText={mode === "edit" ? "Modifier" : "Créer"}
-                        />
+                        {mode === "view" && viewEvent ? (
+                            <div className="event-details">
+                                <div className="detail-item">
+                                    <label>Date:</label>
+                                    <p>{formatDate(viewEvent.date)}</p>
+                                </div>
+                                <div className="detail-item">
+                                    <label>Description:</label>
+                                    <p>{viewEvent.description}</p>
+                                </div>
+                                <div className="detail-item">
+                                    <label>Organisateur:</label>
+                                    <p>{viewEvent.created_by_username}</p>
+                                </div>
+                                <div className="detail-item">
+                                    <label>Inscrits ({registrants.length}):</label>
+                                    {registrants.length > 0 ? (
+                                        <ul className="registrants-list">
+                                            {registrants.map((registrant) => (
+                                                <li key={registrant.id}>{registrant.username}</li>
+                                            ))}
+                                        </ul>
+                                    ) : (
+                                        <p className="no-registrants">Aucun inscrit pour le moment</p>
+                                    )}
+                                </div>
+
+                                <div className="action-buttons">
+                                    {viewEvent.is_owner ? (
+                                        <>
+                                            <button className="btn-edit" onClick={onEditClick}>
+                                                <Pencil1Icon /> Modifier
+                                            </button>
+                                            <button className="btn-delete" onClick={onDeleteClick}>
+                                                <TrashIcon /> Supprimer
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            {viewEvent.is_registered ? (
+                                                <button className="btn-unregister" onClick={onUnregisterClick}>
+                                                    Se désinscrire
+                                                </button>
+                                            ) : (
+                                                <button className="btn-register" onClick={onRegisterClick}>
+                                                    S'inscrire
+                                                </button>
+                                            )}
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+                        ) : (
+                            <EventForm
+                                title={title}
+                                date={date}
+                                description={description}
+                                onTitleChange={onTitleChange}
+                                onDateChange={onDateChange}
+                                onDescriptionChange={onDescriptionChange}
+                                onSubmit={handleSubmit}
+                                buttonText={mode === "edit" ? "Modifier" : "Créer"}
+                            />
+                        )}
                     </div>
 
                     <Dialog.Close asChild>

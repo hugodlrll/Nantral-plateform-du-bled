@@ -23,6 +23,9 @@ export type Event = {
   created_by?: number;
   created_by_username?: string;
   created_at?: string;
+    is_registered?: boolean;
+    is_owner?: boolean;
+    registrants_count?: number;
 };
 
 export interface EventFormProps {

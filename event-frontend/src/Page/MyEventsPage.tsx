@@ -1,26 +1,26 @@
-import "./styles/HomePage.scss";
+import "./styles/MyEventsPage.scss";
 import { useState, useEffect } from "react";
-import { logout } from "../API/auth-actions";
-import { createEvent, getAllEvents, deleteEvent, updateEvent, registerForEvent, unregisterFromEvent, getEventRegistrants } from "../API/event-actions";
-import { useNavigate } from "react-router-dom";
+import { getUserEvents, deleteEvent, updateEvent, createEvent, getEventRegistrants, registerForEvent, unregisterFromEvent } from "../API/event-actions";
 import type { Event, User } from "../utils/types";
 import Header from "../Components/Header";
-import EventDialog from "../Components/EventDialog";
 import EventSlider from "../Components/EventSlider";
+import EventDialog from "../Components/EventDialog";
+import { useNavigate } from "react-router-dom";
+import { logout } from "../API/auth-actions";
+import { PlusIcon } from "@radix-ui/react-icons";
 
-interface HomePageProps {
+interface MyEventsPageProps {
     onLogout: () => void;
     token?: string;
     user: User | null;
 }
 
-export default function HomePage({ onLogout, token, user }: HomePageProps) {
-    const [allEvents, setAllEvents] = useState<Event[]>([]);
+export default function MyEventsPage({ onLogout, token, user }: MyEventsPageProps) {
+    const [events, setEvents] = useState<Event[]>([]);
     const [title, setTitle] = useState("");
     const [date, setDate] = useState("");
     const [description, setDescription] = useState("");
-    const [loadingAllEvents, setLoadingAllEvents] = useState(false);
-    const [actionLoading, setActionLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [editingEventId, setEditingEventId] = useState<number | null>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [dialogMode, setDialogMode] = useState<"create" | "edit" | "view">("create");
@@ -29,36 +29,34 @@ export default function HomePage({ onLogout, token, user }: HomePageProps) {
     const [registrantsByEvent, setRegistrantsByEvent] = useState<Map<number, { id: number; username: string }[]>>(new Map());
     const navigate = useNavigate();
 
-    // Charger les événements au montage
     useEffect(() => {
         if (token) {
-            loadAllEvents();
+            loadUserEvents();
         }
     }, [token]);
 
-    const loadAllEvents = async () => {
+    const loadUserEvents = async () => {
         try {
-            setLoadingAllEvents(true);
+            setLoading(true);
             if (!token) return;
-            const data = await getAllEvents(token);
-            setAllEvents(data);
+            const data = await getUserEvents(token);
+            setEvents(data);
             
-            // Charger les inscrits pour chaque événement
-            const registrantsMap = new Map();
+            // Charger les registrants pour chaque événement
+            const registrantsMap = new Map<number, { id: number; username: string }[]>();
             for (const event of data) {
                 try {
-                    const result = await getEventRegistrants(token, event.id);
-                    registrantsMap.set(event.id, result.registrants || []);
+                    const eventRegistrants = await getEventRegistrants(token, event.id);
+                    registrantsMap.set(event.id, eventRegistrants);
                 } catch (error) {
                     console.error(`Erreur lors du chargement des inscrits pour l'événement ${event.id}:`, error);
-                    registrantsMap.set(event.id, []);
                 }
             }
             setRegistrantsByEvent(registrantsMap);
         } catch (error) {
-            console.error("Erreur lors du chargement de tous les événements :", error);
+            console.error("Erreur lors du chargement des événements :", error);
         } finally {
-            setLoadingAllEvents(false);
+            setLoading(false);
         }
     };
 
@@ -80,19 +78,15 @@ export default function HomePage({ onLogout, token, user }: HomePageProps) {
         }
 
         try {
-            setActionLoading(true);
+            setLoading(true);
             
             if (editingEventId) {
-                // Mode édition
                 await updateEvent(token, editingEventId, { title, date, description });
             } else {
-                // Mode création
                 await createEvent(token, { title, date, description });
             }
             
-            // Recharger les événements
-            await loadAllEvents();
-            // Réinitialiser le formulaire
+            await loadUserEvents();
             setTitle("");
             setDate("");
             setDescription("");
@@ -102,7 +96,7 @@ export default function HomePage({ onLogout, token, user }: HomePageProps) {
             console.error("Erreur lors de la création/modification de l'événement :", error);
             alert("Erreur lors de la création/modification de l'événement");
         } finally {
-            setActionLoading(false);
+            setLoading(false);
         }
     };
 
@@ -114,51 +108,19 @@ export default function HomePage({ onLogout, token, user }: HomePageProps) {
         }
 
         try {
-            setActionLoading(true);
+            setLoading(true);
             await deleteEvent(token, eventId);
-            // Recharger les événements
-            await loadAllEvents();
+            await loadUserEvents();
             setIsDialogOpen(false);
         } catch (error) {
             console.error("Erreur lors de la suppression de l'événement :", error);
             alert("Erreur lors de la suppression de l'événement");
         } finally {
-            setActionLoading(false);
-        }
-    };
-
-    const handleRegisterEvent = async (eventId: number) => {
-        if (!token) return;
-        
-        try {
-            setActionLoading(true);
-            await registerForEvent(token, eventId);
-            await loadAllEvents();
-        } catch (error) {
-            console.error("Erreur lors de l'inscription :", error);
-            alert("Erreur lors de l'inscription");
-        } finally {
-            setActionLoading(false);
-        }
-    };
-
-    const handleUnregisterEvent = async (eventId: number) => {
-        if (!token) return;
-        
-        try {
-            setActionLoading(true);
-            await unregisterFromEvent(token, eventId);
-            await loadAllEvents();
-        } catch (error) {
-            console.error("Erreur lors de la désinscription :", error);
-            alert("Erreur lors de la désinscription");
-        } finally {
-            setActionLoading(false);
+            setLoading(false);
         }
     };
 
     const handleEditEvent = (event: Event) => {
-        // Pré-remplir le formulaire avec les données de l'événement
         setTitle(event.title);
         setDate(event.date);
         setDescription(event.description);
@@ -170,36 +132,75 @@ export default function HomePage({ onLogout, token, user }: HomePageProps) {
     const handleOpenEventView = async (event: Event) => {
         if (!token) return;
         try {
-            setActionLoading(true);
             setSelectedEvent(event);
-            const data = await getEventRegistrants(token, event.id);
-            setRegistrants(data.registrants || []);
+            const eventRegistrants = await getEventRegistrants(token, event.id);
+            setRegistrants(eventRegistrants);
             setDialogMode("view");
             setIsDialogOpen(true);
         } catch (error) {
             console.error("Erreur lors de l'ouverture de l'événement :", error);
             alert("Erreur lors du chargement des inscrits");
-        } finally {
-            setActionLoading(false);
+        }
+    };
+
+    const handleCreateNew = () => {
+        setTitle("");
+        setDate("");
+        setDescription("");
+        setEditingEventId(null);
+        setSelectedEvent(null);
+        setRegistrants([]);
+        setDialogMode("create");
+        setIsDialogOpen(true);
+    };
+
+    const handleRegisterEvent = async (eventId: number) => {
+        if (!token) return;
+        try {
+            await registerForEvent(token, eventId);
+            await loadUserEvents();
+        } catch (error) {
+            console.error("Erreur lors de l'inscription :", error);
+        }
+    };
+
+    const handleUnregisterEvent = async (eventId: number) => {
+        if (!token) return;
+        try {
+            await unregisterFromEvent(token, eventId);
+            await loadUserEvents();
+        } catch (error) {
+            console.error("Erreur lors de la désinscription :", error);
         }
     };
 
     return (
-        <div className="HomePage">
+        <div className="MyEventsPage">
             <div className="header">
                 <Header onLogout={handle_disconnection} user={user} />
             </div>
             <div className="body">
-                {loadingAllEvents ? <p>Chargement...</p> : (
-                    <EventSlider 
-                        events={allEvents} 
-                        onRegister={handleRegisterEvent} 
-                        onUnregister={handleUnregisterEvent} 
-                        onEventClick={handleOpenEventView}
-                        registrantsByEvent={registrantsByEvent}
-                    />
-                )}
-                <EventDialog
+                <h3>Mes événements</h3>
+                <div>
+                    {loading ? (
+                        <p>Chargement...</p>
+                    ) : events.length === 0 ? (
+                        <p className="no-events">Aucun événement pour le moment</p>
+                    ) : (
+                        <EventSlider 
+                            events={events}
+                            onRegister={handleRegisterEvent}
+                            onUnregister={handleUnregisterEvent}
+                            onEventClick={handleOpenEventView}
+                            registrantsByEvent={registrantsByEvent}
+                        />
+                    )}
+                </div>
+                <button className="fab-button" onClick={handleCreateNew} aria-label="Créer un événement">
+                    <PlusIcon />
+                </button>
+            </div>
+            <EventDialog
                 title={title}
                 date={date}
                 description={description}
@@ -207,7 +208,7 @@ export default function HomePage({ onLogout, token, user }: HomePageProps) {
                 onDateChange={setDate}
                 onDescriptionChange={setDescription}
                 onSubmit={addEvent}
-                loading={actionLoading}
+                loading={loading}
                 mode={dialogMode}
                 viewEvent={selectedEvent || undefined}
                 registrants={registrants}
@@ -218,23 +219,11 @@ export default function HomePage({ onLogout, token, user }: HomePageProps) {
                 onDeleteClick={() => {
                     if (!selectedEvent) return;
                     handleDeleteEvent(selectedEvent.id);
-                    setIsDialogOpen(false);
-                }}
-                onRegisterClick={() => {
-                    if (!selectedEvent || !token) return;
-                    handleRegisterEvent(selectedEvent.id);
-                    setIsDialogOpen(false);
-                }}
-                onUnregisterClick={() => {
-                    if (!selectedEvent || !token) return;
-                    handleUnregisterEvent(selectedEvent.id);
-                    setIsDialogOpen(false);
                 }}
                 isOpen={isDialogOpen}
                 onOpenChange={(open) => {
                     setIsDialogOpen(open);
                     if (!open) {
-                        // Réinitialiser quand on ferme le dialogue
                         setTitle("");
                         setDate("");
                         setDescription("");
@@ -245,7 +234,6 @@ export default function HomePage({ onLogout, token, user }: HomePageProps) {
                     }
                 }}
             />
-            </div>
         </div>
     );
 }
