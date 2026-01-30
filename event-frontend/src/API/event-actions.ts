@@ -1,7 +1,7 @@
 const API_BASE_URL = "http://localhost:5000/api";
 
 // Créer un événement
-export const createEvent = async (token: string, eventData: { title: string; date: string; description: string }) => {
+export const createEvent = async (token: string, eventData: { title: string; date: string; description: string; seats: number }) => {
     try {
         const response = await fetch(`${API_BASE_URL}/events`, {
             method: "POST",
@@ -90,7 +90,7 @@ export const deleteEvent = async (token: string, eventId: number) => {
 };
 
 // Mettre à jour un événement
-export const updateEvent = async (token: string, eventId: number, eventData: { title: string; date: string; description: string }) => {
+export const updateEvent = async (token: string, eventId: number, eventData: { title: string; date: string; description: string; seats: number }) => {
     try {
         const response = await fetch(`${API_BASE_URL}/events/${eventId}`, {
             method: "PUT",

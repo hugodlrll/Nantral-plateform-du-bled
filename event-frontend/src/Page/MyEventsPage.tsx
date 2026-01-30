@@ -20,6 +20,7 @@ export default function MyEventsPage({ onLogout, token, user }: MyEventsPageProp
     const [title, setTitle] = useState("");
     const [date, setDate] = useState("");
     const [description, setDescription] = useState("");
+    const [seats, setSeats] = useState(1);
     const [loading, setLoading] = useState(false);
     const [editingEventId, setEditingEventId] = useState<number | null>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -47,7 +48,7 @@ export default function MyEventsPage({ onLogout, token, user }: MyEventsPageProp
             for (const event of data) {
                 try {
                     const eventRegistrants = await getEventRegistrants(token, event.id);
-                    registrantsMap.set(event.id, eventRegistrants);
+                    registrantsMap.set(event.id, eventRegistrants.registrants || []);
                 } catch (error) {
                     console.error(`Erreur lors du chargement des inscrits pour l'événement ${event.id}:`, error);
                 }
@@ -72,7 +73,7 @@ export default function MyEventsPage({ onLogout, token, user }: MyEventsPageProp
             return;
         }
 
-        if (!title || !date || !description) {
+        if (!title || !date || !description || seats < 1) {
             alert("Veuillez remplir tous les champs");
             return;
         }
@@ -81,15 +82,16 @@ export default function MyEventsPage({ onLogout, token, user }: MyEventsPageProp
             setLoading(true);
             
             if (editingEventId) {
-                await updateEvent(token, editingEventId, { title, date, description });
+                await updateEvent(token, editingEventId, { title, date, description, seats });
             } else {
-                await createEvent(token, { title, date, description });
+                await createEvent(token, { title, date, description, seats });
             }
             
             await loadUserEvents();
             setTitle("");
             setDate("");
             setDescription("");
+            setSeats(1);
             setEditingEventId(null);
             setIsDialogOpen(false);
         } catch (error) {
@@ -124,6 +126,7 @@ export default function MyEventsPage({ onLogout, token, user }: MyEventsPageProp
         setTitle(event.title);
         setDate(event.date);
         setDescription(event.description);
+        setSeats(event.seats ?? 1);
         setEditingEventId(event.id);
         setDialogMode("edit");
         setIsDialogOpen(true);
@@ -147,6 +150,7 @@ export default function MyEventsPage({ onLogout, token, user }: MyEventsPageProp
         setTitle("");
         setDate("");
         setDescription("");
+        setSeats(1);
         setEditingEventId(null);
         setSelectedEvent(null);
         setRegistrants([]);
@@ -204,9 +208,11 @@ export default function MyEventsPage({ onLogout, token, user }: MyEventsPageProp
                 title={title}
                 date={date}
                 description={description}
+                seats={seats}
                 onTitleChange={setTitle}
                 onDateChange={setDate}
                 onDescriptionChange={setDescription}
+                onSeatsChange={setSeats}
                 onSubmit={addEvent}
                 loading={loading}
                 mode={dialogMode}
@@ -227,6 +233,7 @@ export default function MyEventsPage({ onLogout, token, user }: MyEventsPageProp
                         setTitle("");
                         setDate("");
                         setDescription("");
+                        setSeats(1);
                         setEditingEventId(null);
                         setSelectedEvent(null);
                         setRegistrants([]);

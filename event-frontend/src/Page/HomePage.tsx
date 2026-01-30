@@ -1,5 +1,5 @@
 import "./styles/HomePage.scss";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { logout } from "../API/auth-actions";
 import { createEvent, getAllEvents, deleteEvent, updateEvent, registerForEvent, unregisterFromEvent, getEventRegistrants } from "../API/event-actions";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +19,7 @@ export default function HomePage({ onLogout, token, user }: HomePageProps) {
     const [title, setTitle] = useState("");
     const [date, setDate] = useState("");
     const [description, setDescription] = useState("");
+    const [seats, setSeats] = useState(1);
     const [loadingAllEvents, setLoadingAllEvents] = useState(false);
     const [actionLoading, setActionLoading] = useState(false);
     const [editingEventId, setEditingEventId] = useState<number | null>(null);
@@ -29,14 +30,7 @@ export default function HomePage({ onLogout, token, user }: HomePageProps) {
     const [registrantsByEvent, setRegistrantsByEvent] = useState<Map<number, { id: number; username: string }[]>>(new Map());
     const navigate = useNavigate();
 
-    // Charger les événements au montage
-    useEffect(() => {
-        if (token) {
-            loadAllEvents();
-        }
-    }, [token]);
-
-    const loadAllEvents = async () => {
+    const loadAllEvents = useCallback(async () => {
         try {
             setLoadingAllEvents(true);
             if (!token) return;
@@ -60,7 +54,14 @@ export default function HomePage({ onLogout, token, user }: HomePageProps) {
         } finally {
             setLoadingAllEvents(false);
         }
-    };
+    }, [token]);
+
+    // Charger les événements au montage
+    useEffect(() => {
+        if (token) {
+            loadAllEvents();
+        }
+    }, [token, loadAllEvents]);
 
     const handle_disconnection = () => {
         logout();
@@ -74,7 +75,7 @@ export default function HomePage({ onLogout, token, user }: HomePageProps) {
             return;
         }
 
-        if (!title || !date || !description) {
+        if (!title || !date || !description || seats < 1) {
             alert("Veuillez remplir tous les champs");
             return;
         }
@@ -84,10 +85,10 @@ export default function HomePage({ onLogout, token, user }: HomePageProps) {
             
             if (editingEventId) {
                 // Mode édition
-                await updateEvent(token, editingEventId, { title, date, description });
+                await updateEvent(token, editingEventId, { title, date, description, seats });
             } else {
                 // Mode création
-                await createEvent(token, { title, date, description });
+                await createEvent(token, { title, date, description, seats });
             }
             
             // Recharger les événements
@@ -96,6 +97,7 @@ export default function HomePage({ onLogout, token, user }: HomePageProps) {
             setTitle("");
             setDate("");
             setDescription("");
+            setSeats(1);
             setEditingEventId(null);
             setIsDialogOpen(false);
         } catch (error) {
@@ -162,6 +164,7 @@ export default function HomePage({ onLogout, token, user }: HomePageProps) {
         setTitle(event.title);
         setDate(event.date);
         setDescription(event.description);
+        setSeats(event.seats ?? 1);
         setEditingEventId(event.id);
         setDialogMode("edit");
         setIsDialogOpen(true);
@@ -203,9 +206,11 @@ export default function HomePage({ onLogout, token, user }: HomePageProps) {
                 title={title}
                 date={date}
                 description={description}
+                seats={seats}
                 onTitleChange={setTitle}
                 onDateChange={setDate}
                 onDescriptionChange={setDescription}
+                onSeatsChange={setSeats}
                 onSubmit={addEvent}
                 loading={actionLoading}
                 mode={dialogMode}
@@ -238,6 +243,7 @@ export default function HomePage({ onLogout, token, user }: HomePageProps) {
                         setTitle("");
                         setDate("");
                         setDescription("");
+                        setSeats(1);
                         setEditingEventId(null);
                         setSelectedEvent(null);
                         setRegistrants([]);

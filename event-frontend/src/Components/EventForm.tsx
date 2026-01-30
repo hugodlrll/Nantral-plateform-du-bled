@@ -5,9 +5,11 @@ export default function EventForm({
     title,
     date,
     description,
+    seats,
     onTitleChange,
     onDateChange,
     onDescriptionChange,
+    onSeatsChange,
     onSubmit,
     buttonText = "Créer",
 }: EventFormProps) {
@@ -40,6 +42,12 @@ export default function EventForm({
                 placeholder="Description"
                 value={description}
                 onChange={(e) => onDescriptionChange(e.target.value)}
+            />
+            <input 
+                type="number"
+                min={1}
+                value={Number.isNaN(seats) ? "" : seats}
+                onChange={(e) => onSeatsChange(Number(e.target.value))}
             />
             <button onClick={onSubmit}>{buttonText}</button>
         </div>

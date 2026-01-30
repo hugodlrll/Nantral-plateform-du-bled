@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Dialog } from "radix-ui";
 import { Cross2Icon, PlusIcon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import EventForm from "./EventForm";
@@ -9,9 +9,11 @@ interface EventDialogProps {
     title: string;
     date: string;
     description: string;
+    seats: number;
     onTitleChange: (value: string) => void;
     onDateChange: (value: string) => void;
     onDescriptionChange: (value: string) => void;
+    onSeatsChange: (value: number) => void;
     onSubmit: () => void;
     loading?: boolean;
     mode?: "create" | "edit" | "view";
@@ -29,11 +31,12 @@ export default function EventDialog({
     title,
     date,
     description,
+    seats,
     onTitleChange,
     onDateChange,
     onDescriptionChange,
+    onSeatsChange,
     onSubmit,
-    loading = false,
     mode = "create",
     isOpen,
     onOpenChange,
@@ -70,6 +73,10 @@ export default function EventDialog({
         ? ""
         : "Remplissez le formulaire pour créer votre événement";
 
+    const isFull = viewEvent?.seats !== undefined
+        ? viewEvent.seats <= ((viewEvent.registrants_count || 0) + 1)
+        : false;
+
     return (
         <Dialog.Root open={open} onOpenChange={setOpen}>
             {mode === "create" && (
@@ -99,6 +106,10 @@ export default function EventDialog({
                                 <div className="detail-item">
                                     <label>Description:</label>
                                     <p>{viewEvent.description}</p>
+                                </div>
+                                <div className="detail-item">
+                                    <label>Places:</label>
+                                    <p>{viewEvent.seats ?? 0} (restantes: {viewEvent.remaining_seats ?? Math.max((viewEvent.seats ?? 0) - ((viewEvent.registrants_count || 0) + 1), 0)})</p>
                                 </div>
                                 <div className="detail-item">
                                     <label>Organisateur:</label>
@@ -134,7 +145,7 @@ export default function EventDialog({
                                                     Se désinscrire
                                                 </button>
                                             ) : (
-                                                <button className="btn-register" onClick={onRegisterClick}>
+                                                <button className="btn-register" onClick={onRegisterClick} disabled={isFull}>
                                                     S'inscrire
                                                 </button>
                                             )}
@@ -147,9 +158,11 @@ export default function EventDialog({
                                 title={title}
                                 date={date}
                                 description={description}
+                                seats={seats}
                                 onTitleChange={onTitleChange}
                                 onDateChange={onDateChange}
                                 onDescriptionChange={onDescriptionChange}
+                                onSeatsChange={onSeatsChange}
                                 onSubmit={handleSubmit}
                                 buttonText={mode === "edit" ? "Modifier" : "Créer"}
                             />

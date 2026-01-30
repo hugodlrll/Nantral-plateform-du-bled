@@ -20,21 +20,26 @@ export type Event = {
   title: string;
   date: string;
   description: string;
+    seats?: number;
   created_by?: number;
   created_by_username?: string;
   created_at?: string;
     is_registered?: boolean;
     is_owner?: boolean;
     registrants_count?: number;
+        remaining_seats?: number;
+        is_full?: boolean;
 };
 
 export interface EventFormProps {
     title: string;
     date: string;
     description: string;
+    seats: number;
     onTitleChange: (value: string) => void;
     onDateChange: (value: string) => void;
     onDescriptionChange: (value: string) => void;
+    onSeatsChange: (value: number) => void;
     buttonText?: string;
     onSubmit: () => void;
 }
