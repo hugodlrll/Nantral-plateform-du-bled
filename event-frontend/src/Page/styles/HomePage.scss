@@ -2,40 +2,15 @@
 
 /* HomePage styles */
 .HomePage {
-    padding-top: 70px;
-    min-height: 100vh;
-    height: 100vh;
     overflow: hidden;
     background: linear-gradient(135deg, #f5f3ff 0%, #faf8ff 100%);
     display: flex;
     flex-direction: column;
+    height: 100%;
 }
 
-.body {
-    padding: 50px 20px;
-    margin: 0 auto;
-    width: 100%;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-}
-
-.body > p {
-    font-size: 16px;
-    color: #555;
-    margin-bottom: 40px;
-    text-align: center;
-    line-height: 1.6;
-}
-
-.body h1 {
-    font-size: 22px;
-    font-weight: 600;
-    color: var(--violet-11);
-    margin-bottom: 25px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid var(--violet-6);
+.body{
+    padding-top: 150px;
 }
 
 @media (max-width: 768px) {

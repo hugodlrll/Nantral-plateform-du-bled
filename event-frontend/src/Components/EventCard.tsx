@@ -58,7 +58,7 @@ export default function EventCard({ event, onRegister, onUnregister, onClick, re
             onClick={handleRegisterClick}
             disabled={isFull && !event.is_registered}
           >
-            {event.is_registered ? 'Se désinscrire' : "S'inscrire"}
+            {event.is_registered ? "Se désincrire" : (isFull ? "Complet" : "S'incrire")}
           </button>
         )}
       </div>

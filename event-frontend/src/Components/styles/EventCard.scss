@@ -1,5 +1,6 @@
 @import "@radix-ui/colors/violet.css";
 @import "@radix-ui/colors/red.css";
+@import "@radix-ui/colors/gray.css";
 
 .event-card {
   background: white;
@@ -70,6 +71,14 @@
     &:hover{
       background: var(--violet-12);
     }
+    &:disabled {
+      background: var(--gray-9);
+      cursor: not-allowed;
+      
+      &:hover {
+        background: var(--gray-9);
+      }
+    }
 
     &.registered {
       background: var(--red-10);
@@ -78,6 +87,8 @@
         background: var(--red-12);
       }
     }
+
+  
   }
 }
 

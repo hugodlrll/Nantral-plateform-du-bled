@@ -8,8 +8,8 @@
     left: 0;
     right: 0;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     padding: 10px 10px;
     background: linear-gradient(135deg, var(--violet-10) 0%, var(--violet-12) 100%);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
@@ -27,7 +27,11 @@
 }
 
 .nav-buttons {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
+    align-items: center;
     gap: 12px;
 }
 
@@ -35,6 +39,7 @@
     all: unset;
     padding: 8px 16px;
     border-radius: 6px;
+    width: 140px;
     font-size: 14px;
     font-weight: 500;
     color: white;

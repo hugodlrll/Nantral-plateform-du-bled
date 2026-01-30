@@ -80,6 +80,7 @@ exports.getUserEvents = async (req, res) => {
                 e.date, 
                 e.description, 
                 e.created_by, 
+                u.username as created_by_username,
                 e.created_at,
                 e.seats,
                 COUNT(DISTINCT ue.user_id)::int as registrants_count,
@@ -87,9 +88,10 @@ exports.getUserEvents = async (req, res) => {
                 (e.seats <= (COUNT(DISTINCT ue.user_id) + 1)) as is_full,
                 true as is_owner
             FROM events e
+            JOIN users u ON e.created_by = u.id
             LEFT JOIN user_events ue ON e.id = ue.event_id
             WHERE e.created_by = $1
-            GROUP BY e.id
+            GROUP BY e.id, u.username
             ORDER BY e.created_at DESC;
         `;
 

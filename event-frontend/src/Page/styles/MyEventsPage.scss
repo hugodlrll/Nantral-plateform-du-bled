@@ -1,95 +1,15 @@
 @import "@radix-ui/colors/violet.css";
 
+/* HomePage styles */
 .MyEventsPage {
-    padding-top: 70px;
-    min-height: 100vh;
-    height: 100vh;
     overflow: hidden;
     background: linear-gradient(135deg, #f5f3ff 0%, #faf8ff 100%);
     display: flex;
     flex-direction: column;
+    height: 100%;
 }
 
-.body {
-    //padding: 50px 20px;
-    margin: 0 auto;
-    width: 100%;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
 
-.body h3 {
-    font-size: 32px;
-    font-weight: 700;
-    color: var(--violet-11);
-    margin-bottom: 15px;
-    text-align: center;
-}
-
-.body > p {
-    font-size: 16px;
-    color: #555;
-    margin-bottom: 40px;
-    text-align: center;
-    line-height: 1.6;
-}
-
-.body > div {
-    flex: 1;
-    flex-direction: column;
-    overflow: visible;
-}
-
-.body h1 {
-    font-size: 22px;
-    font-weight: 600;
-    color: var(--violet-11);
-    margin-bottom: 25px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid var(--violet-6);
-}
-
-.no-events {
-    color: #999;
-    font-style: italic;
-    text-align: center;
-    padding: 40px;
-}
-
-.fab-button {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--violet-9) 0%, var(--violet-11) 100%);
-    color: white;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-    transition: all 0.3s ease;
-    z-index: 50;
-
-    &:hover {
-        transform: scale(1.1);
-        box-shadow: 0 6px 28px rgba(0, 0, 0, 0.3);
-    }
-
-    &:active {
-        transform: scale(0.95);
-    }
-
-    svg {
-        width: 28px;
-        height: 28px;
-    }
-}
 
 @media (max-width: 768px) {
     .MyEventsPage {
@@ -107,18 +27,5 @@
 
     .body > div {
         padding: 25px;
-    }
-
-    .fab-button {
-        bottom: 20px;
-        right: 20px;
-        width: 56px;
-        height: 56px;
-        font-size: 20px;
-
-        svg {
-            width: 24px;
-            height: 24px;
-        }
     }
 }

@@ -28,6 +28,7 @@ export default function HomePage({ onLogout, token, user }: HomePageProps) {
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
     const [registrants, setRegistrants] = useState<{ id: number; username: string }[]>([]);
     const [registrantsByEvent, setRegistrantsByEvent] = useState<Map<number, { id: number; username: string }[]>>(new Map());
+    const [currentSliderPage, setCurrentSliderPage] = useState(0);
     const navigate = useNavigate();
 
     const loadAllEvents = useCallback(async () => {
@@ -200,6 +201,8 @@ export default function HomePage({ onLogout, token, user }: HomePageProps) {
                         onUnregister={handleUnregisterEvent} 
                         onEventClick={handleOpenEventView}
                         registrantsByEvent={registrantsByEvent}
+                        currentPage={currentSliderPage}
+                        onPageChange={setCurrentSliderPage}
                     />
                 )}
                 <EventDialog

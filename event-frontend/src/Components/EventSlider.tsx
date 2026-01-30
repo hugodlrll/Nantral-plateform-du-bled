@@ -10,12 +10,16 @@ type Props = {
   onUnregister: (eventId: number) => void;
   onEventClick: (event: Event) => void;
   registrantsByEvent: Map<number, { id: number; username: string }[]>;
+  currentPage?: number;
+  onPageChange?: (page: number) => void;
 };
 
 const EVENTS_PER_PAGE = 6;
 
-export default function EventSlider({ events, onRegister, onUnregister, onEventClick, registrantsByEvent }: Props) {
-  const [currentPage, setCurrentPage] = useState(0);
+export default function EventSlider({ events, onRegister, onUnregister, onEventClick, registrantsByEvent, currentPage: externalPage, onPageChange }: Props) {
+  const [internalPage, setInternalPage] = useState(0);
+  const currentPage = externalPage !== undefined ? externalPage : internalPage;
+  const setCurrentPage = onPageChange || setInternalPage;
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {

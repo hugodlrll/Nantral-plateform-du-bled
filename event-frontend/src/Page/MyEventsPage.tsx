@@ -28,6 +28,7 @@ export default function MyEventsPage({ onLogout, token, user }: MyEventsPageProp
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
     const [registrants, setRegistrants] = useState<{ id: number; username: string }[]>([]);
     const [registrantsByEvent, setRegistrantsByEvent] = useState<Map<number, { id: number; username: string }[]>>(new Map());
+    const [currentSliderPage, setCurrentSliderPage] = useState(0);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -137,7 +138,7 @@ export default function MyEventsPage({ onLogout, token, user }: MyEventsPageProp
         try {
             setSelectedEvent(event);
             const eventRegistrants = await getEventRegistrants(token, event.id);
-            setRegistrants(eventRegistrants);
+            setRegistrants(eventRegistrants.registrants || []);
             setDialogMode("view");
             setIsDialogOpen(true);
         } catch (error) {
@@ -184,7 +185,6 @@ export default function MyEventsPage({ onLogout, token, user }: MyEventsPageProp
                 <Header onLogout={handle_disconnection} user={user} />
             </div>
             <div className="body">
-                <h3>Mes événements</h3>
                 <div>
                     {loading ? (
                         <p>Chargement...</p>
@@ -197,6 +197,8 @@ export default function MyEventsPage({ onLogout, token, user }: MyEventsPageProp
                             onUnregister={handleUnregisterEvent}
                             onEventClick={handleOpenEventView}
                             registrantsByEvent={registrantsByEvent}
+                            currentPage={currentSliderPage}
+                            onPageChange={setCurrentSliderPage}
                         />
                     )}
                 </div>
