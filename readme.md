@@ -20,7 +20,7 @@
 5. CREATE DATABASE DBname ;
 6. \c DBname ;
 7. (use vs extension postgres sql (the second one) to visualize the database)
-8. Launch all the sql script files located in the /event-backend/migrations folder
+8. Launch the sql script file "create_tables.sql" located in the /event-backend/migrations folder
 
 # Launch the project #
 

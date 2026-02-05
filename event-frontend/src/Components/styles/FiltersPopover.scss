@@ -1,0 +1,117 @@
+@import "@radix-ui/colors/violet.css";
+
+.filters-trigger {
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--violet-7);
+    background: var(--violet-3);
+    color: var(--violet-12);
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.filters-trigger:hover {
+    background: var(--violet-4);
+    box-shadow: 0 6px 14px color-mix(in srgb, var(--violet-7) 25%, transparent);
+    transform: translateY(-1px);
+}
+
+.filters-popover {
+    background: var(--violet-1);
+    border: 1px solid var(--violet-6);
+    border-radius: 12px;
+    padding: 14px;
+    min-width: 240px;
+    box-shadow: 0 12px 30px color-mix(in srgb, var(--violet-7) 25%, transparent);
+}
+
+.filters-arrow {
+    fill: var(--violet-1);
+    stroke: var(--violet-6);
+}
+
+.filter-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 8px 0;
+}
+
+.filter-label {
+    color: var(--violet-12);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.switch-root {
+    width: 42px;
+    height: 24px;
+    background: var(--violet-4);
+    border-radius: 999px;
+    position: relative;
+    border: 1px solid var(--violet-7);
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.switch-root[data-state="checked"] {
+    background: var(--violet-9);
+    border-color: var(--violet-9);
+}
+
+.switch-thumb {
+    display: block;
+    width: 18px;
+    height: 18px;
+    background: white;
+    border-radius: 999px;
+    transition: transform 0.2s ease;
+    transform: translateX(-3px);
+}
+
+.switch-root[data-state="checked"] .switch-thumb {
+    transform: translateX(14px);
+}
+
+.clear-filters {
+    margin-top: 8px;
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--violet-7);
+    background: var(--violet-3);
+    color: var(--violet-12);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.clear-filters:hover {
+    background: var(--violet-4);
+    box-shadow: 0 6px 14px color-mix(in srgb, var(--violet-7) 25%, transparent);
+}
+
+:root.dark .filters-trigger,
+:root.dark .clear-filters {
+    background: var(--violet-10);
+    border-color: var(--violet-12);
+    color: white;
+}
+
+:root.dark .switch-root {
+    background: var(--violet-10);
+    border-color: var(--violet-12);
+}
+
+:root.dark .filters-popover {
+    background-color: #2d2d2d;
+} 
+
+:root.dark .filters-arrow {
+     fill: #2d2d2d;
+}
+
+:root.dark .filter-label {
+    color: white;
+}

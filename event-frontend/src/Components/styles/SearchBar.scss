@@ -1,0 +1,33 @@
+@import "@radix-ui/colors/violet.css";
+
+.search-input {
+    flex: 1;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--violet-6);
+    background: var(--violet-1);
+    color: var(--violet-12);
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-input::placeholder {
+    color: var(--violet-11);
+    opacity: 0.6;
+}
+
+.search-input:focus {
+    border-color: var(--violet-8);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--violet-6) 40%, transparent);
+}
+
+:root.dark .search-input {
+    background: #2d2d2d;
+    border-color: var(--violet-11);
+    color: white;
+    &::placeholder {
+        color: white;
+        opacity: 0.6;
+    }
+}

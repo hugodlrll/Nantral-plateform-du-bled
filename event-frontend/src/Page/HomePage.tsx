@@ -8,6 +8,8 @@ import Header from "../Components/Header";
 import EventDialog from "../Components/EventDialog";
 import EventSlider from "../Components/EventSlider";
 import { toastEventCreated, toastEventUpdated, toastEventDeleted, toastRegisteredToEvent, toastUnregisteredFromEvent, toastError, toastLogoutSuccess } from "../utils/toasts";
+import SearchBar from "../Components/SearchBar";
+import FiltersPopover from "../Components/FiltersPopover";
 
 interface HomePageProps {
     onLogout: () => void;
@@ -21,6 +23,10 @@ export default function HomePage({ onLogout, token, user }: HomePageProps) {
     const [date, setDate] = useState("");
     const [description, setDescription] = useState("");
     const [seats, setSeats] = useState(1);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [filterAvailableOnly, setFilterAvailableOnly] = useState(false);
+    const [filterUpcomingOnly, setFilterUpcomingOnly] = useState(false);
+    const [filterRegisteredOnly, setFilterRegisteredOnly] = useState(false);
     const [loadingAllEvents, setLoadingAllEvents] = useState(false);
     const [actionLoading, setActionLoading] = useState(false);
     const [editingEventId, setEditingEventId] = useState<number | null>(null);
@@ -201,15 +207,64 @@ export default function HomePage({ onLogout, token, user }: HomePageProps) {
         }
     };
 
+    const getRegistrantsCount = (event: Event) => {
+        const mapCount = registrantsByEvent.get(event.id)?.length;
+        return mapCount ?? event.registrants_count ?? 0;
+    };
+
+    const filteredEvents = allEvents.filter((event) => {
+        const query = searchQuery.trim().toLowerCase();
+        const matchesQuery = !query
+            || event.title.toLowerCase().includes(query)
+            || (event.description || "").toLowerCase().includes(query);
+
+        const registrantsCount = getRegistrantsCount(event);
+        const seatsCount = event.seats ?? 0;
+        const isFull = event.is_full ?? (seatsCount > 0 ? registrantsCount >= seatsCount : false);
+        const matchesAvailability = !filterAvailableOnly || !isFull;
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const eventDate = new Date(event.date);
+        eventDate.setHours(0, 0, 0, 0);
+        const isUpcoming = eventDate >= today;
+        const matchesUpcoming = !filterUpcomingOnly || isUpcoming;
+
+        const matchesRegistered = !filterRegisteredOnly || !!event.is_registered;
+
+        return matchesQuery && matchesAvailability && matchesUpcoming && matchesRegistered;
+    });
+
     return (
         <div className="HomePage">
             <div className="header">
                 <Header onLogout={handle_disconnection} user={user} />
             </div>
             <div className="body">
+                <div className="filters-bar">
+                    <SearchBar
+                        value={searchQuery}
+                        onChange={setSearchQuery}
+                        placeholder="Rechercher un événement"
+                    />
+                    <FiltersPopover
+                        availableOnly={filterAvailableOnly}
+                        upcomingOnly={filterUpcomingOnly}
+                        registeredOnly={filterRegisteredOnly}
+                        onAvailableChange={setFilterAvailableOnly}
+                        onUpcomingChange={setFilterUpcomingOnly}
+                        onRegisteredChange={setFilterRegisteredOnly}
+                        onReset={() => {
+                            setSearchQuery("");
+                            setFilterAvailableOnly(false);
+                            setFilterUpcomingOnly(false);
+                            setFilterRegisteredOnly(false);
+                        }}
+                    />
+                </div>
                 {loadingAllEvents ? <p>Chargement...</p> : (
                     <EventSlider 
-                        events={allEvents} 
+                        events={filteredEvents} 
                         onRegister={handleRegisterEvent} 
                         onUnregister={handleUnregisterEvent} 
                         onEventClick={handleOpenEventView}
