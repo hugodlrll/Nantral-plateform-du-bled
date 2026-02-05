@@ -62,3 +62,75 @@ export function logout(): void {
         localStorage.removeItem("token");
     }  
 }
+
+export async function updateUsername(newUsername: string): Promise<User> {
+    const token = localStorage.getItem("token");
+    
+    if (!token) {
+        throw new Error("no token");
+    }
+
+    const res = await fetch("/api/username", {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ username: newUsername }),
+    });
+
+    if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || "Failed to update username");
+    }
+
+    const data = await res.json();
+    return data.user;
+}
+
+export async function updateEmail(newEmail: string): Promise<User> {
+    const token = localStorage.getItem("token");
+    
+    if (!token) {
+        throw new Error("no token");
+    }
+
+    const res = await fetch("/api/email", {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ email: newEmail }),
+    });
+
+    if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || "Failed to update email");
+    }
+
+    const data = await res.json();
+    return data.user;
+}
+
+export async function updatePassword(currentPassword: string, newPassword: string): Promise<void> {
+    const token = localStorage.getItem("token");
+    
+    if (!token) {
+        throw new Error("no token");
+    }
+
+    const res = await fetch("/api/password", {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ currentPassword, newPassword }),
+    });
+
+    if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || "Failed to update password");
+    }
+}

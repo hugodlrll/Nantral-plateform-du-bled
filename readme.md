@@ -3,7 +3,7 @@
 1. create a folder event-backend and cd in this folder
 2. type the following commands : 
 3. npm init -y
-4. npm install express cors bcryptjs jsonwebtoken pg bcrypt dotenv 
+4. npm install express cors bcryptjs jsonwebtoken pg bcrypt dotenv multer
 5. cd ..
 6. npm create vite@latest event-frontend -- --template react-ts
 7. (npm run dev to launch the website)
@@ -24,8 +24,11 @@
 
 # Launch the project #
 
-1. Navigate to the event-backend folder
-2. Type : npm run dev
-3. Then navigate to the event-frontend folder
+1. Clone the git repository
+2. Navigate to the event-backend folder
+3. Type : npm install
 4. Type : npm run dev
-5. You can now launch the website at the following url : http://localhost:5173/
+5. Then navigate to the event-frontend folder
+6. Type : npm install
+7. Type : npm run dev
+8. You can now launch the website at the following url : http://localhost:5173/

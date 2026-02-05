@@ -1,0 +1,255 @@
+.profile-page {
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--violet-12) 0%, var(--violet-11) 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-container {
+    margin:0;
+    background: var(--violet-3);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+
+    h1 {
+        margin: 0;
+        color: var(--violet-12);
+        font-size: 28px;
+    }
+
+    .back-button {
+        padding: 8px 16px;
+        background-color: var(--violet-9);
+        color: var(--violet-1);
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+
+        &:hover {
+            background-color: var(--violet-10);
+            transform: translateY(-1px);
+        }
+
+        &:active {
+            transform: translateY(0);
+        }
+    }
+}
+
+.profile-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+
+    @media (max-width: 600px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.avatar-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    background: var(--violet-1);
+    border-radius: 12px;
+    height: 100%;
+}
+
+.user-info-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    .info-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--violet-11);
+            letter-spacing: 0.5px;
+        }
+
+        .display-field {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-width: 300px;
+            padding: 12px;
+            background: var(--violet-1);
+            border-radius: 8px;
+
+            p {
+                margin: 0;
+                font-size: 16px;
+                color: var(--violet-12);
+            }
+
+            .edit-btn {
+                padding: 6px 12px;
+                background-color: var(--violet-9);
+                color: var(--violet-1);
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 12px;
+                font-weight: 500;
+                transition: all 0.2s ease;
+
+                &:hover {
+                    background-color: var(--violet-10);
+                }
+
+                &:active {
+                    transform: scale(0.98);
+                }
+            }
+        }
+
+        .edit-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+
+            input {
+                padding: 16px;
+                border: 2px solid var(--violet-7);
+                border-radius: 8px;
+                font-size: 18px;
+                color: var(--violet-12);
+                background: var(--violet-1);
+                transition: all 0.2s ease;
+                width: 100%;
+                min-height: 50px;
+                box-sizing: border-box;
+
+                &:focus {
+                    outline: none;
+                    border-color: var(--violet-9);
+                    box-shadow: 0 0 0 3px var(--violet-4);
+                }
+
+                &:disabled {
+                    opacity: 0.6;
+                    cursor: not-allowed;
+                }
+            }
+
+            .button-group {
+                display: flex;
+                gap: 8px;
+
+                .save-btn {
+                    padding: 8px 16px;
+                    background-color: var(--violet-9);
+                    color: var(--violet-1);
+                    border: none;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-size: 14px;
+                    font-weight: 500;
+                    transition: all 0.2s ease;
+                    flex: 1;
+
+                    &:hover:not(:disabled) {
+                        background-color: var(--violet-10);
+                        transform: translateY(-1px);
+                    }
+
+                    &:disabled {
+                        opacity: 0.6;
+                        cursor: not-allowed;
+                    }
+                }
+
+                .cancel-btn {
+                    padding: 8px 16px;
+                    background-color: var(--violet-6);
+                    color: var(--violet-11);
+                    border: none;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-size: 14px;
+                    font-weight: 500;
+                    transition: all 0.2s ease;
+                    flex: 1;
+
+                    &:hover:not(:disabled) {
+                        background-color: var(--violet-7);
+                    }
+
+                    &:disabled {
+                        opacity: 0.6;
+                        cursor: not-allowed;
+                    }
+                }
+            }
+        }
+    }
+}
+
+:root.dark {
+    .profile-page {
+        background: linear-gradient(135deg, var(--violet-12) 0%, var(--violet-11) 100%);
+    }
+
+    .profile-container {
+        background: black;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .profile-header h1 {
+        color: var(--violet-9);
+    }
+
+    .avatar-section {
+        background: #2d2d2d;
+    }
+
+    .user-info-section {
+        .info-group {
+            .display-field {
+                background: #2d2d2d;              
+
+                p {
+                    color: white;
+                }
+            }
+
+            .edit-field {
+                input {
+                    background:#2d2d2d;
+                    color: white;
+                    border-color: var(--violet-9);
+
+                    &:focus {
+                        border-color: var(--violet-9);
+                        box-shadow: 0 0 0 3px var(--violet-5);
+                    }
+
+                    &::placeholder {
+                        color: white;
+                    }
+                }
+            }
+        }
+    }
+}

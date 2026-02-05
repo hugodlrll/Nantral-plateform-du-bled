@@ -106,10 +106,13 @@
 
 :root.dark .filters-popover {
     background-color: #2d2d2d;
+    border: #2d2d2d;
+    box-shadow: 0 2px 5px var(--black-a7);
 } 
 
 :root.dark .filters-arrow {
-     fill: #2d2d2d;
+    background-color: #2d2d2d;
+    border: #2d2d2d;
 }
 
 :root.dark .filter-label {

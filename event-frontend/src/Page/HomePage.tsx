@@ -2,7 +2,7 @@ import "./styles/HomePage.scss";
 import { useState, useEffect, useCallback } from "react";
 import { logout } from "../API/auth-actions";
 import { createEvent, getAllEvents, deleteEvent, updateEvent, registerForEvent, unregisterFromEvent, getEventRegistrants } from "../API/event-actions";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import type { Event, User } from "../utils/types";
 import Header from "../Components/Header";
 import EventDialog from "../Components/EventDialog";
@@ -36,7 +36,14 @@ export default function HomePage({ onLogout, token, user }: HomePageProps) {
     const [registrants, setRegistrants] = useState<{ id: number; username: string }[]>([]);
     const [registrantsByEvent, setRegistrantsByEvent] = useState<Map<number, { id: number; username: string }[]>>(new Map());
     const [currentSliderPage, setCurrentSliderPage] = useState(0);
+    const [avatarRefreshKey, setAvatarRefreshKey] = useState(Date.now());
     const navigate = useNavigate();
+    const location = useLocation();
+
+    // Rafraîchir l'avatar quand on revient sur la page
+    useEffect(() => {
+        setAvatarRefreshKey(Date.now());
+    }, [location.key]);
 
     const loadAllEvents = useCallback(async () => {
         try {
@@ -238,7 +245,7 @@ export default function HomePage({ onLogout, token, user }: HomePageProps) {
     return (
         <div className="HomePage">
             <div className="header">
-                <Header onLogout={handle_disconnection} user={user} />
+                <Header onLogout={handle_disconnection} user={user} avatarRefreshKey={avatarRefreshKey} />
             </div>
             <div className="body">
                 <div className="filters-bar">

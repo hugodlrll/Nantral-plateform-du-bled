@@ -11,15 +11,17 @@ import { Toaster } from 'react-hot-toast';
 export default function App() {
   const[user, setUser] = useState<User | null>(null);
   const[token, setToken] = useState<string | null>(null);
+  const[isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
 
     if(!storedToken) {
+      setIsLoading(false);
       return;
-    } else {
-      setToken(storedToken);
     }
+    
+    setToken(storedToken);
     validateToken()
       .then((u) => {
         setUser(u);
@@ -28,6 +30,9 @@ export default function App() {
         localStorage.removeItem("token");
         setToken(null);
         setUser(null);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, []);
 
@@ -45,17 +50,34 @@ export default function App() {
     setUser(null);
   }
 
+  const handleUserUpdate = (updatedUser: User) => {
+    setUser(updatedUser);
+  }
+
   return(
     <ThemeProvider>
       <Toaster />
       <Tooltip.Provider>
         <BrowserRouter>
-          <AppRoutes
-            user={user}
-            token={token}
-            onLoginSuccess={handleLoginSucess}
-            onLogout={handleLogout}
-          /> 
+          {isLoading ? (
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'center', 
+              alignItems: 'center', 
+              height: '100vh',
+              backgroundColor: '#f5f5f5'
+            }}>
+              <div style={{ fontSize: '18px', color: '#666' }}>Chargement...</div>
+            </div>
+          ) : (
+            <AppRoutes
+              user={user}
+              token={token}
+              onLoginSuccess={handleLoginSucess}
+              onLogout={handleLogout}
+              onUserUpdate={handleUserUpdate}
+            />
+          )}
         </BrowserRouter>
       </Tooltip.Provider>
     </ThemeProvider>

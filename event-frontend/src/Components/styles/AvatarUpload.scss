@@ -1,0 +1,42 @@
+.avatar-upload {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .avatar-button {
+        padding: 8px 16px;
+        background-color: var(--violet-9);
+        color: var(--violet-1);
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+
+        &:hover:not(:disabled) {
+            background-color: var(--violet-10);
+            transform: translateY(-1px);
+        }
+
+        &:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    }
+}
+
+:root.dark {
+    .avatar-upload .avatar-button {
+        background-color: var(--violet-10);
+        color: var(--violet-1);
+
+        &:hover:not(:disabled) {
+            background-color: var(--violet-11);
+        }
+    }
+}

@@ -4,13 +4,15 @@ import { ExitIcon, MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import { useNavigate, useLocation } from "react-router-dom";
 import type { User } from "../utils/types";
 import { useTheme } from "../context/ThemeContext";
+import { AvatarDisplay } from "./AvatarDisplay";
 
 interface HeaderProps {
     onLogout: () => void;
     user: User | null;
+    avatarRefreshKey?: number;
 }
 
-export default function Header({ onLogout, user }: HeaderProps) {
+export default function Header({ onLogout, user, avatarRefreshKey = 0 }: HeaderProps) {
     const navigate = useNavigate();
     const location = useLocation();
     
@@ -37,12 +39,21 @@ export default function Header({ onLogout, user }: HeaderProps) {
             <div className="Profile">
                 <Popover.Root>
                     <Popover.Trigger asChild>
-                        <button className="IconButton" aria-label="Update dimensions">
+                        <button className="IconButton" aria-label="User menu">
                             <Tooltip.Root>
-                                <Avatar.Root className="AvatarRoot">
-                                    <Avatar.Image className="AvatarImage" src="https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80" alt="User Avatar" />
-                                    <Avatar.Fallback className="AvatarFallback" delayMs={600}>U</Avatar.Fallback>
-                                </Avatar.Root>
+                                {user ? (
+                                    <AvatarDisplay 
+                                        userId={user.id} 
+                                        username={user.username}
+                                        hasAvatar={user.hasAvatar}
+                                        size="small"
+                                        refreshKey={avatarRefreshKey}
+                                    />
+                                ) : (
+                                    <Avatar.Root className="AvatarRoot">
+                                        <Avatar.Fallback className="AvatarFallback" delayMs={600}>U</Avatar.Fallback>
+                                    </Avatar.Root>
+                                )}
                             </Tooltip.Root>
                         </button>
                     </Popover.Trigger>
@@ -52,6 +63,9 @@ export default function Header({ onLogout, user }: HeaderProps) {
                                 <div className="user-info">
                                     <span className="username">{user?.username || "Utilisateur"}</span>
                                 </div>
+                                <button className="profile-button" onClick={() => navigate("/profile")}>
+                                    <span>Mon profil</span>
+                                </button>
                                 <button className="theme-toggle-button" onClick={toggleTheme}>
                                     {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
                                     <span>{theme === 'dark' ? 'Mode clair' : 'Mode sombre'}</span>

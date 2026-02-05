@@ -88,6 +88,14 @@ export const toastSignupError = (message?: string) => {
   });
 };
 
+// Toast de succès pour l'upload d'avatar
+export const toastSuccess = (message: string) => {
+  toast.success(message, {
+    duration: 3000,
+    position: 'top-right',
+  });
+};
+
 // Toast d'information
 export const toastInfo = (message: string) => {
   toast(message, {
