@@ -8,6 +8,7 @@ import EventDialog from "../Components/EventDialog";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../API/auth-actions";
 import { PlusIcon } from "@radix-ui/react-icons";
+import { toastEventCreated, toastEventUpdated, toastEventDeleted, toastRegisteredToEvent, toastUnregisteredFromEvent, toastError, toastLogoutSuccess } from "../utils/toasts";
 
 interface MyEventsPageProps {
     onLogout: () => void;
@@ -65,17 +66,18 @@ export default function MyEventsPage({ onLogout, token, user }: MyEventsPageProp
     const handle_disconnection = () => {
         logout();
         onLogout();
+        toastLogoutSuccess();
         navigate("/");
     };
 
     const addEvent = async () => {
         if (!token) {
-            alert("Vous devez être connecté pour créer un événement");
+            toastError("Vous devez être connecté pour créer un événement");
             return;
         }
 
         if (!title || !date || !description || seats < 1) {
-            alert("Veuillez remplir tous les champs");
+            toastError("Veuillez remplir tous les champs");
             return;
         }
 
@@ -84,8 +86,10 @@ export default function MyEventsPage({ onLogout, token, user }: MyEventsPageProp
             
             if (editingEventId) {
                 await updateEvent(token, editingEventId, { title, date, description, seats });
+                toastEventUpdated();
             } else {
                 await createEvent(token, { title, date, description, seats });
+                toastEventCreated();
             }
             
             await loadUserEvents();
@@ -97,7 +101,7 @@ export default function MyEventsPage({ onLogout, token, user }: MyEventsPageProp
             setIsDialogOpen(false);
         } catch (error) {
             console.error("Erreur lors de la création/modification de l'événement :", error);
-            alert("Erreur lors de la création/modification de l'événement");
+            toastError("Erreur lors de la création/modification de l'événement");
         } finally {
             setLoading(false);
         }
@@ -113,11 +117,12 @@ export default function MyEventsPage({ onLogout, token, user }: MyEventsPageProp
         try {
             setLoading(true);
             await deleteEvent(token, eventId);
+            toastEventDeleted();
             await loadUserEvents();
             setIsDialogOpen(false);
         } catch (error) {
             console.error("Erreur lors de la suppression de l'événement :", error);
-            alert("Erreur lors de la suppression de l'événement");
+            toastError("Erreur lors de la suppression de l'événement");
         } finally {
             setLoading(false);
         }
@@ -143,7 +148,7 @@ export default function MyEventsPage({ onLogout, token, user }: MyEventsPageProp
             setIsDialogOpen(true);
         } catch (error) {
             console.error("Erreur lors de l'ouverture de l'événement :", error);
-            alert("Erreur lors du chargement des inscrits");
+            toastError("Erreur lors du chargement des inscrits");
         }
     };
 
@@ -164,8 +169,13 @@ export default function MyEventsPage({ onLogout, token, user }: MyEventsPageProp
         try {
             await registerForEvent(token, eventId);
             await loadUserEvents();
+            const event = events.find(e => e.id === eventId);
+            if (event) {
+                toastRegisteredToEvent(event.title);
+            }
         } catch (error) {
             console.error("Erreur lors de l'inscription :", error);
+            toastError("Erreur lors de l'inscription");
         }
     };
 
@@ -174,8 +184,13 @@ export default function MyEventsPage({ onLogout, token, user }: MyEventsPageProp
         try {
             await unregisterFromEvent(token, eventId);
             await loadUserEvents();
+            const event = events.find(e => e.id === eventId);
+            if (event) {
+                toastUnregisteredFromEvent(event.title);
+            }
         } catch (error) {
             console.error("Erreur lors de la désinscription :", error);
+            toastError("Erreur lors de la désinscription");
         }
     };
 

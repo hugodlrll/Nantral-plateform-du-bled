@@ -8,7 +8,7 @@
 6. npm create vite@latest event-frontend -- --template react-ts
 7. (npm run dev to launch the website)
 8. cd event-frontend
-9. npm install sass
+9. npm install sass react-hot-toast 
 10. npm install
 
 # Postgres #

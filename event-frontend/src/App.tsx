@@ -6,6 +6,7 @@ import AppRoutes from './AppRoutes';
 import { validateToken } from './API/auth-actions';
 import { Tooltip } from 'radix-ui';
 import { ThemeProvider } from './context/ThemeContext';
+import { Toaster } from 'react-hot-toast';
 
 export default function App() {
   const[user, setUser] = useState<User | null>(null);
@@ -46,6 +47,7 @@ export default function App() {
 
   return(
     <ThemeProvider>
+      <Toaster />
       <Tooltip.Provider>
         <BrowserRouter>
           <AppRoutes

@@ -7,6 +7,7 @@ import type { Event, User } from "../utils/types";
 import Header from "../Components/Header";
 import EventDialog from "../Components/EventDialog";
 import EventSlider from "../Components/EventSlider";
+import { toastEventCreated, toastEventUpdated, toastEventDeleted, toastRegisteredToEvent, toastUnregisteredFromEvent, toastError, toastLogoutSuccess } from "../utils/toasts";
 
 interface HomePageProps {
     onLogout: () => void;
@@ -67,17 +68,18 @@ export default function HomePage({ onLogout, token, user }: HomePageProps) {
     const handle_disconnection = () => {
         logout();
         onLogout();
+        toastLogoutSuccess();
         navigate("/");
     };
 
     const addEvent = async () => {
         if (!token) {
-            alert("Vous devez être connecté pour créer un événement");
+            toastError("Vous devez être connecté pour créer un événement");
             return;
         }
 
         if (!title || !date || !description || seats < 1) {
-            alert("Veuillez remplir tous les champs");
+            toastError("Veuillez remplir tous les champs");
             return;
         }
 
@@ -87,9 +89,11 @@ export default function HomePage({ onLogout, token, user }: HomePageProps) {
             if (editingEventId) {
                 // Mode édition
                 await updateEvent(token, editingEventId, { title, date, description, seats });
+                toastEventUpdated();
             } else {
                 // Mode création
                 await createEvent(token, { title, date, description, seats });
+                toastEventCreated();
             }
             
             // Recharger les événements
@@ -103,7 +107,7 @@ export default function HomePage({ onLogout, token, user }: HomePageProps) {
             setIsDialogOpen(false);
         } catch (error) {
             console.error("Erreur lors de la création/modification de l'événement :", error);
-            alert("Erreur lors de la création/modification de l'événement");
+            toastError("Erreur lors de la création/modification de l'événement");
         } finally {
             setActionLoading(false);
         }
@@ -119,12 +123,13 @@ export default function HomePage({ onLogout, token, user }: HomePageProps) {
         try {
             setActionLoading(true);
             await deleteEvent(token, eventId);
+            toastEventDeleted();
             // Recharger les événements
             await loadAllEvents();
             setIsDialogOpen(false);
         } catch (error) {
             console.error("Erreur lors de la suppression de l'événement :", error);
-            alert("Erreur lors de la suppression de l'événement");
+            toastError("Erreur lors de la suppression de l'événement");
         } finally {
             setActionLoading(false);
         }
@@ -137,9 +142,13 @@ export default function HomePage({ onLogout, token, user }: HomePageProps) {
             setActionLoading(true);
             await registerForEvent(token, eventId);
             await loadAllEvents();
+            const event = allEvents.find(e => e.id === eventId);
+            if (event) {
+                toastRegisteredToEvent(event.title);
+            }
         } catch (error) {
             console.error("Erreur lors de l'inscription :", error);
-            alert("Erreur lors de l'inscription");
+            toastError("Erreur lors de l'inscription");
         } finally {
             setActionLoading(false);
         }
@@ -152,9 +161,13 @@ export default function HomePage({ onLogout, token, user }: HomePageProps) {
             setActionLoading(true);
             await unregisterFromEvent(token, eventId);
             await loadAllEvents();
+            const event = allEvents.find(e => e.id === eventId);
+            if (event) {
+                toastUnregisteredFromEvent(event.title);
+            }
         } catch (error) {
             console.error("Erreur lors de la désinscription :", error);
-            alert("Erreur lors de la désinscription");
+            toastError("Erreur lors de la désinscription");
         } finally {
             setActionLoading(false);
         }
@@ -182,7 +195,7 @@ export default function HomePage({ onLogout, token, user }: HomePageProps) {
             setIsDialogOpen(true);
         } catch (error) {
             console.error("Erreur lors de l'ouverture de l'événement :", error);
-            alert("Erreur lors du chargement des inscrits");
+            toastError("Erreur lors du chargement des inscrits");
         } finally {
             setActionLoading(false);
         }

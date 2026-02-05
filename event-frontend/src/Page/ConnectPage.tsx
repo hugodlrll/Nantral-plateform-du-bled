@@ -4,6 +4,7 @@ import { login, signup, validateToken } from "../API/auth-actions";
 import { type FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { User } from "../utils/types";
+import { toastLoginSuccess, toastSignupSuccess, toastLoginError, toastSignupError } from "../utils/toasts";
 
 interface ConnectPageProps {
     onLoginSuccess: (token: string, user: User) => void;
@@ -26,9 +27,11 @@ export default function ConnectPage({ onLoginSuccess }: ConnectPageProps) {
             const user = await validateToken();
             localStorage.setItem("userId", user.id.toString());
             onLoginSuccess(token, user);
+            toastLoginSuccess(user.username);
             navigate("/home");
         } catch (error) {
             setErrorMessage("Identifiant ou mot de passe invalide.");
+            toastLoginError();
             console.error("Login failed:", error);
         }
     }
@@ -41,9 +44,11 @@ export default function ConnectPage({ onLoginSuccess }: ConnectPageProps) {
             const user = await validateToken();
             localStorage.setItem("userId", user.id.toString());
             onLoginSuccess(token, user);
+            toastSignupSuccess(user.username);
             navigate("/home");
         } catch (error) {
             setErrorMessage("Le compte existe déjà ou une erreur est survenue.");
+            toastSignupError("Le compte existe déjà ou une erreur est survenue.");
             console.error("Registration failed:", error);
         }
     }
