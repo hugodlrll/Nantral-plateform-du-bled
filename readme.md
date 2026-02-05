@@ -3,12 +3,12 @@
 1. create a folder event-backend and cd in this folder
 2. type the following commands : 
 3. npm init -y
-4. npm install express core bcryptjs jsonwebtoken pg
+4. npm install express cors bcryptjs jsonwebtoken pg bcrypt dotenv 
 5. cd ..
 6. npm create vite@latest event-frontend -- --template react-ts
 7. (npm run dev to launch the website)
 8. cd event-frontend
-9. npm install sass react-hot-toast 
+9. npm install react sass react-hot-toast radix-ui react-dom react-router-dom
 10. npm install
 
 # Postgres #

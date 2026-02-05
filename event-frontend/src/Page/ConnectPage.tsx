@@ -1,10 +1,12 @@
 import "./styles/ConnectPage.scss";
 import { Tabs } from "radix-ui";
 import { login, signup, validateToken } from "../API/auth-actions";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import type { User } from "../utils/types";
 import { toastLoginSuccess, toastSignupSuccess, toastLoginError, toastSignupError } from "../utils/toasts";
+import { useTheme } from "../context/ThemeContext";
+import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
 
 interface ConnectPageProps {
     onLoginSuccess: (token: string, user: User) => void;
@@ -17,6 +19,19 @@ export default function ConnectPage({ onLoginSuccess }: ConnectPageProps) {
     const [password, setPassword]=useState("");
     const navigate = useNavigate();
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const { theme, toggleTheme } = useTheme();
+    const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 });
+
+    useEffect(() => {
+        const handleMouseMove = (e: MouseEvent) => {
+            const x = (e.clientX / window.innerWidth) * 100;
+            const y = (e.clientY / window.innerHeight) * 100;
+            setMousePosition({ x, y });
+        };
+
+        window.addEventListener('mousemove', handleMouseMove);
+        return () => window.removeEventListener('mousemove', handleMouseMove);
+    }, []);
 
     
     async function handleSubmitLogin(e: FormEvent){
@@ -54,7 +69,17 @@ export default function ConnectPage({ onLoginSuccess }: ConnectPageProps) {
     }
 
     return(
-        <Tabs.Root className="TabsRoot" defaultValue="LoginTab">
+        <div 
+            className="ConnectPage"
+            style={{
+                '--mouse-x': `${mousePosition.x}%`,
+                '--mouse-y': `${mousePosition.y}%`,
+            } as React.CSSProperties}
+        >
+            <button className="theme-toggle" onClick={toggleTheme}>
+                {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+            </button>
+            <Tabs.Root className="TabsRoot" defaultValue="LoginTab">
             <Tabs.List className="TabsList" aria-label="Manage your account">
                 <Tabs.Trigger className="TabsTrigger" value="LoginTab">
                     Connexion
@@ -85,5 +110,6 @@ export default function ConnectPage({ onLoginSuccess }: ConnectPageProps) {
                 {errorMessage && <p className="ErrorMessage">{errorMessage}</p>}
             </Tabs.Content>
         </Tabs.Root>
+        </div>
     );
 }

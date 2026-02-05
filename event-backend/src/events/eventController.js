@@ -254,11 +254,19 @@ exports.getEventRegistrants = async (req, res) => {
         const { eventId } = req.params;
 
         const query = `
-            SELECT u.id, u.username
-            FROM user_events ue
-            JOIN users u ON ue.user_id = u.id
-            WHERE ue.event_id = $1
-            ORDER BY ue.created_at ASC;
+            SELECT id, username
+            FROM (
+                SELECT u.id, u.username, false AS is_owner, ue.created_at
+                FROM user_events ue
+                JOIN users u ON ue.user_id = u.id
+                WHERE ue.event_id = $1
+                UNION
+                SELECT u.id, u.username, true AS is_owner, NULL::timestamp AS created_at
+                FROM events e
+                JOIN users u ON e.created_by = u.id
+                WHERE e.id = $1
+            ) registrants
+            ORDER BY is_owner DESC, created_at ASC NULLS LAST;
         `;
 
         const result = await pool.query(query, [eventId]);
