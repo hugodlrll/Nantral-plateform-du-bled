@@ -9,7 +9,9 @@
     height: 100%;
 }
 
-
+:root.dark .MyEventsPage {
+    background: linear-gradient(135deg, #111111 0%, #1a1a1a 100%);
+}
 
 @media (max-width: 768px) {
     .MyEventsPage {

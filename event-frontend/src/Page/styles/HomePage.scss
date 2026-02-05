@@ -9,6 +9,10 @@
     height: 100%;
 }
 
+:root.dark .HomePage {
+    background: linear-gradient(135deg, #111111 0%, #1a1a1a 100%);
+}
+
 .body{
     padding-top: 150px;
 }

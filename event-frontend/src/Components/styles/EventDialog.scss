@@ -396,3 +396,61 @@
         }
     }
 }
+
+:root.dark .dialog-content {
+    background-color: #2d2d2d;
+    color: #ffffff;
+
+    .dialog-title {
+        color: var(--violet-9);
+    }
+
+    .dialog-description {
+        color: #aeaeae;
+    }
+
+    .form {
+        input,
+        textarea {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            border-color: var(--violet-6);
+
+            &::placeholder {
+                color: #888;
+            }
+
+            &:focus {
+                background-color: #242424;
+                border-color: var(--violet-9);
+            }
+        }
+    }
+
+    .event-details-box {
+        background-color: #1a1a1a;
+        border-color: var(--violet-6);
+
+        .event-detail-item {
+            .detail-label {
+                color: #aeaeae;
+            }
+
+            .detail-value {
+                color: #ffffff;
+            }
+        }
+    }
+
+    .registered-users-section .user-list {
+        background-color: #1a1a1a;
+
+        .user-item {
+            border-color: #444;
+
+            .user-info .user-email {
+                color: #aeaeae;
+            }
+        }
+    }
+}

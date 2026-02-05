@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import AppRoutes from './AppRoutes';
 import { validateToken } from './API/auth-actions';
 import { Tooltip } from 'radix-ui';
+import { ThemeProvider } from './context/ThemeContext';
 
 export default function App() {
   const[user, setUser] = useState<User | null>(null);
@@ -44,15 +45,17 @@ export default function App() {
   }
 
   return(
-    <Tooltip.Provider>
-      <BrowserRouter>
-        <AppRoutes
-          user={user}
-          token={token}
-          onLoginSuccess={handleLoginSucess}
-          onLogout={handleLogout}
-        /> 
-      </BrowserRouter>
-    </Tooltip.Provider>
+    <ThemeProvider>
+      <Tooltip.Provider>
+        <BrowserRouter>
+          <AppRoutes
+            user={user}
+            token={token}
+            onLoginSuccess={handleLoginSucess}
+            onLogout={handleLogout}
+          /> 
+        </BrowserRouter>
+      </Tooltip.Provider>
+    </ThemeProvider>
   );
 }

@@ -8,8 +8,10 @@ form {
     border: 1px solid #ddd;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: white; /* Default to white for the form card */
 
     input {
+
         padding: 0.75rem;
         font-size: 1rem;
         border: 1px solid #ccc;
@@ -48,4 +50,25 @@ form {
   color: #c0392b;
   margin: 0 auto 1rem;
   text-align: center;
+}
+
+:root.dark form {
+    background-color: #2d2d2d;
+    border-color: #444;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+
+    input {
+        background-color: #1a1a1a;
+        color: #ffffff;
+        border-color: #444;
+
+        &::placeholder {
+            color: #888;
+        }
+
+        &:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+        }
+    }
 }

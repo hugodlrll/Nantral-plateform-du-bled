@@ -106,6 +106,31 @@
     font-weight: 500;
 }
 
+.theme-toggle-button {
+    all: unset;
+    padding: 0px 10px;
+    font-family: inherit;
+    border-radius: 8px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: white;
+    box-shadow: 0 2px 5px var(--black-a7);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: var(--violet-9);
+
+    &:hover {
+        background-color: var(--violet-10);
+    }
+
+    &:active {
+        transform: scale(0.98);
+    }
+}
+
 .disconnection-button {
     all: unset;
     font-family: inherit;
@@ -240,4 +265,16 @@
         opacity: 1;
         transform: translateX(0);
     }
+}
+
+:root.dark .PopoverContent {
+    background-color: #2d2d2d;
+
+    .username {
+        color: var(--violet-9);
+    }
+}
+
+:root.dark .PopoverArrow {
+    fill: #2d2d2d;
 }

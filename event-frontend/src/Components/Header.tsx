@@ -1,8 +1,9 @@
 import "./styles/Header.scss";
 import { Avatar, Tooltip, Popover } from "radix-ui";
-import { ExitIcon } from "@radix-ui/react-icons";
+import { ExitIcon, MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import { useNavigate, useLocation } from "react-router-dom";
 import type { User } from "../utils/types";
+import { useTheme } from "../context/ThemeContext";
 
 interface HeaderProps {
     onLogout: () => void;
@@ -14,6 +15,7 @@ export default function Header({ onLogout, user }: HeaderProps) {
     const location = useLocation();
     
     const isOnHomePage = location.pathname === "/home";
+    const { theme, toggleTheme } = useTheme();
 
     return (
         <div className="Header">
@@ -50,6 +52,10 @@ export default function Header({ onLogout, user }: HeaderProps) {
                                 <div className="user-info">
                                     <span className="username">{user?.username || "Utilisateur"}</span>
                                 </div>
+                                <button className="theme-toggle-button" onClick={toggleTheme}>
+                                    {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+                                    <span>{theme === 'dark' ? 'Mode clair' : 'Mode sombre'}</span>
+                                </button>
                                 <button className="disconnection-button" onClick={onLogout}>
                                     <ExitIcon className="disconnection-icon" />
                                 </button>

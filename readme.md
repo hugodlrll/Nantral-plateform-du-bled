@@ -16,15 +16,16 @@
 1. add the path of the postgres app (C:\Program Files\PostgreSQL\18\bin) in your windows PATH
 2. type de following commands :
 3. psql -U postgres
-4. type your password
+4. type your postgres password
 5. CREATE DATABASE DBname ;
-6. \c dbname ;
-7. use vs extension postgres sql (the second one) to visualize the database
-8. The command to create an sql table is the following one :
+6. \c DBname ;
+7. (use vs extension postgres sql (the second one) to visualize the database)
+8. Launch all the sql script files located in the /event-backend/migrations folder
 
-CREATE TABLE users(  
-    id SERIAL PRIMARY KEY,
-    username VARCHAR(50) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    email VARCHAR(255)
-);
+# Launch the project #
+
+1. Navigate to the event-backend folder
+2. Type : npm run dev
+3. Then navigate to the event-frontend folder
+4. Type : npm run dev
+5. You can now launch the website at the following url : http://localhost:5173/
